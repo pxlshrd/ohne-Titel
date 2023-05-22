@@ -559,7 +559,6 @@ function wobblyLineSegmentDrawn(x, y, x1, y1, wobbliness) {
 	}
 }
 
-
 function wobblyLineDrawn(x, y, x1, y1, wobbliness) {
 	taperswitch = random()
 	colBriSwitch = random(-5, 5)
