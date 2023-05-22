@@ -553,32 +553,9 @@ function wobblyLineSegmentDrawn(x, y, x1, y1, wobbliness) {
 		let colVarDet = map(noise(x * 0.05, y * 0.05), 0, 1, -3, 3)
 		noiseDetail(noiseDet, noiseDetFallOff)
 
-		// Calculate distance to repellor and attractor
-		let distanceToRepellor = dist(pointX, pointY, repellorX, repellorY)
-		let distanceToAttractor = dist(pointX, pointY, attractorX, attractorY)
-
-		// Apply repellor and attractor forces with distance-based attenuation
-		let repellorForce = 0;
-		if (distanceToRepellor < repellorSize) {
-			repellorForce = map(distanceToRepellor, 0, repellorSize, 2, 0) //adding random([2, 5, 20]) to the force
-		}
-
-		let attractorForce = 0;
-		if (distanceToAttractor < attractorSize) {
-			attractorForce = map(distanceToAttractor, 0, attractorSize, 0, 0); //4 4 the 4ce is good
-		}
-
-		// Calculate the normalized distance from the center of the repellor/attractor
-		let repellorDistanceNormalized = map(distanceToRepellor, 0, repellorSize, 1, 0);
-		let attractorDistanceNormalized = map(distanceToAttractor, 0, attractorSize, 1, 0);
-
-		// Apply force with distance-based attenuation
-		let finalX = pointX + repellorForce * (pointX - repellorX) * repellorDistanceNormalized + attractorForce * (attractorX - pointX) * attractorDistanceNormalized
-		let finalY = pointY + repellorForce * (pointY - repellorY) * repellorDistanceNormalized + attractorForce * (attractorY - pointY) * attractorDistanceNormalized
-
 		pg.stroke(hue(col2), saturationVal, brightness(col2) + colVarDet + briIndex)
 		pg.strokeWeight(weight + random(-0.2, 0.2))
-		pg.point(finalX + rndX, finalY + rndY)
+		pg.point(pointX + rndX, pointY + rndY)
 	}
 }
 
