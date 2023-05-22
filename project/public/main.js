@@ -193,11 +193,11 @@ function draw() {
 		pencilArcDraw()
 	}
 
-	if (counter > 10 && !stopCounter && dPressed == false) {
-		if (counter % 5 == 0) {
-			pencilScribblesDraw(1)
-		}
-	}
+	// if (counter > 10 && !stopCounter && dPressed == false) {
+	// 	if (counter % 5 == 0) {
+	// 		pencilScribblesDraw(1)
+	// 	}
+	// }
 
 	if (counter > 20 && !stopCounter && dPressed == false) {
 		if (counter % 15 == 0) {
@@ -299,10 +299,10 @@ function draw() {
 
 		}
 		sprayWalk()
-		if (counter % 25 == 0 && dPressed == false) {
-			// laugh()
-			drawIsometricCube(random(width), random(height), random(5, 100), random(5, 100))
-		}
+		// if (counter % 25 == 0 && dPressed == false) {
+		// 	// laugh()
+		// 	drawIsometricCube(random(width), random(height), random(5, 100), random(5, 100))
+		// }
 
 	}
 
