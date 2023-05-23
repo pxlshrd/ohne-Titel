@@ -3,6 +3,7 @@ let dPressed = false
 let title = 'lamento'
 let saveTimeout
 let saving = false
+let repInfl
 
 let startTime
 let timeDisplay
@@ -139,7 +140,7 @@ function pxldrw(pxlDens, w, h) {
 
 		for (let i = 0; i < polygon.length - 1; i++) {
 			wobblyLineDrawn(polygon[i].x, polygon[i].y, polygon[i + 1].x, polygon[i + 1].y, 100)
-			pg.line(polygon[i].x, polygon[i].y, poiX, poiY, 100)
+			wobblyLineDrawn(polygon[i].x, polygon[i].y, poiX, poiY, 100)
 
 		}
 		wobblyLineDrawn(polygon[polygon.length - 1].x, polygon[polygon.length - 1].y, polygon[0].x, polygon[0].y, 100)
@@ -175,6 +176,14 @@ function pxldrw(pxlDens, w, h) {
 	shadingFreq = 2
 	shadingRot = random(0, TWO_PI)
 
+	let repellorInfluence = [
+		[0, 30],
+		[2, 50],
+		[5, 15],
+		[20, 5]
+	]
+	repInfl = weightedRnd(repellorInfluence)
+
 	startTime = millis()
 	timeDisplay = createP()
 	timeDisplay.position(windowWidth - 150, 20)
@@ -193,12 +202,6 @@ function draw() {
 		pencilArcDraw()
 	}
 
-	// if (counter > 10 && !stopCounter && dPressed == false) {
-	// 	if (counter % 5 == 0) {
-	// 		pencilScribblesDraw(1)
-	// 	}
-	// }
-
 	if (counter > 20 && !stopCounter && dPressed == false) {
 		if (counter % 15 == 0) {
 			brushes()
@@ -209,10 +212,6 @@ function draw() {
 		background(hue(backCol) - 5, saturation(backCol), brightness(backCol))
 		limbic(width / 2, height / 2, 1000, 50)
 		image(pg, 0, height - (100 + counter * gridSize), width, height)
-		// scribbleWave()
-		// ribbon()
-		// shadingPencil()
-
 
 		if (backCol === col3) {
 			printingCan.fill(col4)
@@ -221,88 +220,9 @@ function draw() {
 		}
 		typoPencilPigments(printX - printsz * 4 + counter * 2.2, printY + printsz * 1.1 + random(-50, 10), random(height / 2000, height / 500))
 		image(printingCan, 0, height - (100 + counter * 1.2 * gridSize), width, height)
-		y = 50 + counter * gridSize;
+		drawComposition()
 
-		for (let x = 50; x < width - 50; x += gridSize) {
-
-			let minDist = Infinity
-			let nearestPolygon = null
-			let insidePolygon = false
-			let insideBigCircle = false
-
-			let distToPolygon = isPointInsidePolygon(x, y, polygon)
-
-			if (distToPolygon < minDist) {
-				minDist = distToPolygon
-				nearestPolygon = polygon
-				insidePolygon = isPointInsidePolygon(x, y, polygon)
-
-			}
-
-			let distToBigCircle = dist(x, y, bigCircle.center.x, bigCircle.center.y) - bigCircle.radius
-			if (distToBigCircle < minDist) {
-				minDist = distToBigCircle
-				insideBigCircle = (distToBigCircle <= 0)
-			}
-
-			if (!insidePolygon && !insideBigCircle && random() < 0.7) {
-				if (dPressed == false) {
-					dotHalftone(x, y, random(2, 3))
-				} else {
-					push()
-					pg.noStroke()
-					pg.fill(backCol)
-					pg.rect(x, y, random(2, 5))
-					pop()
-				}
-			}
-
-
-			if (insideBigCircle) {
-				if (dPressed == false) {
-					drorb(x, y, wobble)
-					orbOutline(bigCircle.center.x, bigCircle.center.y, bigCircle.radius)
-				} else {
-					rectz(x, y, random(8, 10))
-				}
-			}
-
-
-			if (!insideBigCircle) {
-
-				if (dPressed == false) {
-					if (random() < 0.3) {
-						let rndOff = 0
-						let closestPoint = closestPointOnPolygon(x, y, nearestPolygon)
-						let lineLength = dist(x, y, closestPoint.x, closestPoint.y)
-						let smoothEdging = random(-30, 30)
-						if (lineLength > 300 + smoothEdging) {
-							if (counter % limit == true) {
-								wobblyLineDrawn(x + random(-rndOff, rndOff), y + random(-rndOff, rndOff), closestPoint.x + random(-rndOff, rndOff), closestPoint.y + random(-rndOff, rndOff), wobble)
-							}
-						} else {
-							wobblyLineDrawn(x + random(-rndOff, rndOff), y + random(-rndOff, rndOff), closestPoint.x + random(-rndOff, rndOff), closestPoint.y + random(-rndOff, rndOff), wobble)
-						}
-					}
-				} else {
-					let closestPoint = closestPointOnPolygon(x, y, nearestPolygon)
-					let lineLength = dist(x, y, closestPoint.x, closestPoint.y)
-					if (lineLength > 300) {
-						if (counter % limit == true) {
-							digitalLine(x, y, closestPoint.x, closestPoint.y, wobble)
-						}
-					} else {
-						digitalLine(x, y, closestPoint.x, closestPoint.y, wobble)
-					}
-				}
-			}
-
-		}
 		sprayWalk()
-		// if (counter % 25 == 0 && dPressed == false) {
-		// 	// laugh()
-		// 	drawIsometricCube(random(width), random(height), random(5, 100), random(5, 100))
-		// }
 
 	}
 
@@ -341,6 +261,98 @@ function draw() {
 	let elapsedTime = (endTime - startTime) / 1000
 	displayTime(elapsedTime)
 	counter++
+}
+
+function weightedRnd(input) {
+	let out = []
+
+	for (let inp of input) {
+		for (let i = 0; i < inp[1]; i++) {
+			out.push(inp[0])
+		}
+	}
+
+	let output = int(random(out.length))
+	return out[output]
+}
+
+function drawComposition() {
+
+	y = 50 + counter * gridSize;
+	for (let x = 50; x < width - 50; x += gridSize) {
+
+		let minDist = Infinity
+		let nearestPolygon = null
+		let insidePolygon = false
+		let insideBigCircle = false
+
+		let distToPolygon = isPointInsidePolygon(x, y, polygon)
+
+		if (distToPolygon < minDist) {
+			minDist = distToPolygon
+			nearestPolygon = polygon
+			insidePolygon = isPointInsidePolygon(x, y, polygon)
+
+		}
+
+		let distToBigCircle = dist(x, y, bigCircle.center.x, bigCircle.center.y) - bigCircle.radius
+		if (distToBigCircle < minDist) {
+			minDist = distToBigCircle
+			insideBigCircle = (distToBigCircle <= 0)
+		}
+
+		if (!insidePolygon && !insideBigCircle && random() < 0.7) {
+			if (dPressed == false) {
+				dotHalftone(x, y, random(2, 3))
+			} else {
+				push()
+				pg.noStroke()
+				pg.fill(backCol)
+				pg.rect(x, y, random(2, 5))
+				pop()
+			}
+		}
+
+
+		if (insideBigCircle) {
+			if (dPressed == false) {
+				drorb(x, y, wobble)
+				orbOutline(bigCircle.center.x, bigCircle.center.y, bigCircle.radius)
+			} else {
+				rectz(x, y, random(8, 10))
+			}
+		}
+
+
+		if (!insideBigCircle) {
+
+			if (dPressed == false) {
+				if (random() < 0.3) {
+					let rndOff = 0
+					let closestPoint = closestPointOnPolygon(x, y, nearestPolygon)
+					let lineLength = dist(x, y, closestPoint.x, closestPoint.y)
+					let smoothEdging = random(-30, 30)
+					if (lineLength > 300 + smoothEdging) {
+						if (counter % limit == true) {
+							wobblyLineDrawn(x + random(-rndOff, rndOff), y + random(-rndOff, rndOff), closestPoint.x + random(-rndOff, rndOff), closestPoint.y + random(-rndOff, rndOff), wobble)
+						}
+					} else {
+						wobblyLineDrawn(x + random(-rndOff, rndOff), y + random(-rndOff, rndOff), closestPoint.x + random(-rndOff, rndOff), closestPoint.y + random(-rndOff, rndOff), wobble)
+					}
+				}
+			} else {
+				let closestPoint = closestPointOnPolygon(x, y, nearestPolygon)
+				let lineLength = dist(x, y, closestPoint.x, closestPoint.y)
+				if (lineLength > 300) {
+					if (counter % limit == true) {
+						digitalLine(x, y, closestPoint.x, closestPoint.y, wobble)
+					}
+				} else {
+					digitalLine(x, y, closestPoint.x, closestPoint.y, wobble)
+				}
+			}
+		}
+	}
 }
 
 function isPointInsidePolygon(px, py, vertices) {
@@ -501,14 +513,14 @@ function digitalLine(x, y, x1, y1, wobbliness) {
 }
 
 function wobblyLineSegmentDrawn(x, y, x1, y1, wobbliness) {
-	
+
 	let repellorX = bigCircle.center.x
 	let repellorY = bigCircle.center.y
-	let repellorSize = bigCircle.radius*2
+	let repellorSize = bigCircle.radius * 2
 
-	let attractorX = bigCircle.center.x
-	let attractorY = bigCircle.center.y
-	let attractorSize = bigCircle.radius*4
+	// let attractorX = bigCircle.center.x
+	// let attractorY = bigCircle.center.y
+	// let attractorSize = bigCircle.radius * 4
 
 	if ($fx.getParam("colDist") == 'micro') {
 		colorCount = random([0, 45, 90, 180])
@@ -553,35 +565,33 @@ function wobblyLineSegmentDrawn(x, y, x1, y1, wobbliness) {
 		let colVarDet = map(noise(x * 0.05, y * 0.05), 0, 1, -3, 3)
 		noiseDetail(noiseDet, noiseDetFallOff)
 
-		// Calculate distance to repellor and attractor
 		let distanceToRepellor = dist(pointX, pointY, repellorX, repellorY)
-		let distanceToAttractor = dist(pointX, pointY, attractorX, attractorY)
+		// let distanceToAttractor = dist(pointX, pointY, attractorX, attractorY)
 
-		// Apply repellor and attractor forces with distance-based attenuation
+		// repellor forces with distance-based attenuation
 		let repellorForce = 0;
 		if (distanceToRepellor < repellorSize) {
-			repellorForce = map(distanceToRepellor, 0, repellorSize, 2, 0) //adding random([2, 5, 20]) to the force
+			repellorForce = map(distanceToRepellor, 0, repellorSize, repInfl, 0) //adding random([2, 5, 20]) to the force
 		}
 
-		let attractorForce = 0;
-		if (distanceToAttractor < attractorSize) {
-			attractorForce = map(distanceToAttractor, 0, attractorSize, 0, 0); //4 4 the 4ce is good
-		}
+		// let attractorForce = 0;
+		// if (distanceToAttractor < attractorSize) {
+		// 	attractorForce = map(distanceToAttractor, 0, attractorSize, 0, 0); //4 4 the 4ce is good
+		// }
 
 		// Calculate the normalized distance from the center of the repellor/attractor
 		let repellorDistanceNormalized = map(distanceToRepellor, 0, repellorSize, 1, 0);
-		let attractorDistanceNormalized = map(distanceToAttractor, 0, attractorSize, 1, 0);
+		// let attractorDistanceNormalized = map(distanceToAttractor, 0, attractorSize, 1, 0);
 
 		// Apply force with distance-based attenuation
-		let finalX = pointX + repellorForce * (pointX - repellorX) * repellorDistanceNormalized + attractorForce * (attractorX - pointX) * attractorDistanceNormalized
-		let finalY = pointY + repellorForce * (pointY - repellorY) * repellorDistanceNormalized + attractorForce * (attractorY - pointY) * attractorDistanceNormalized
+		let finalX = pointX + repellorForce * (pointX - repellorX) * repellorDistanceNormalized// + attractorForce * (attractorX - pointX) * attractorDistanceNormalized
+		let finalY = pointY + repellorForce * (pointY - repellorY) * repellorDistanceNormalized// + attractorForce * (attractorY - pointY) * attractorDistanceNormalized
 
 		pg.stroke(hue(col2), saturationVal, brightness(col2) + colVarDet + briIndex)
 		pg.strokeWeight(weight + random(-0.2, 0.2))
 		pg.point(finalX + rndX, finalY + rndY)
 	}
 }
-
 
 function wobblyLineDrawn(x, y, x1, y1, wobbliness) {
 	taperswitch = random()

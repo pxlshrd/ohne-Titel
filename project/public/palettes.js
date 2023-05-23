@@ -62,6 +62,11 @@ function getPalettes(palettename) {
       'colors': ["#484B2F", "#999468", "#A6A676", "#D6CE93", "#EFEBCE", "#D8A48F", "#CA958C", "#BB8588", "#BDB88A", "#D6B09F"],
       'back': ['#EFEBCE', '#D6B09F', '#D6CE93']
     },
+    {
+      'name': '13',
+      'colors': ["#403533", "#7D6465", "#75332B", "#66654D", "#999468", "#C9BCB1", "#BDA7A2", "#DECEBF", "#8FA09D", "#BCD6CE"],
+      'back': ['#C9BCB1', '#8FA09D', '#7D6465']
+    },
 
   ]
 
