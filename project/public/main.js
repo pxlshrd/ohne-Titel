@@ -157,7 +157,7 @@ function pxldrw(pxlDens, w, h) {
 		radius: random(height / 10, height / 4),
 	}
 
-	background(hue(backCol) - 5, saturation(backCol)-2, brightness(backCol))
+	background(hue(backCol), saturation(backCol), brightness(backCol))
 
 	vari1 = random(0, 4)
 	vari2 = random(0, 4)
@@ -221,15 +221,12 @@ function draw() {
 	}
 
 	if (!stopCounter) {
-		background(hue(backCol) - 5, saturation(backCol)-2, brightness(backCol))
+		background(hue(backCol), saturation(backCol), brightness(backCol))
 		limbic(width / 2, height / 2, 1000, 50)
 		image(pg, 0, height - (100 + counter * gridSize), width, height)
 
-		if (backCol === col3) {
-			printingCan.fill(col4)
-		} else {
-			printingCan.fill(col3)
-		}
+
+		printingCan.fill(col3)
 		typoPencilPigments(printX - printsz * 4 + counter * 2.2, printY + printsz * 1.1 + random(-50, 10), random(height / 2000, height / 500))
 		image(printingCan, 0, height - (100 + counter * 1.2 * gridSize), width, height)
 		drawComposition()
@@ -558,11 +555,13 @@ function wobblyLineSegmentDrawn(x, y, x1, y1, wobbliness) {
 
 		let rndX = random(-1, 1)
 		let rndY = random(-1, 1)
+
 		let angle = atan2(endY - startY, endX - startX)
 		angle = (angle * colorCount) / PI
 		let colorIndex = int(map(angle, -180, 180, 0, colorzz.length))
 		let briIndex = map(angle, -180, 180, -5, 5)
 		let col2 = colorzz[colorIndex]
+
 		if (taperswitch < 0.5) {
 			weight = baseWeight * map(1 - i / segments, 0, 1, 1.6, crayonSz)
 			saturationStart = saturation(col2) + 10
@@ -643,7 +642,7 @@ function wobblyLineDrawn(x, y, x1, y1, wobbliness) {
 }
 
 function wobblyLineSegmentTex(x, y, x1, y1, wobbliness) {
-	let texCol = random(colorpalette.colors)
+	let texCol = random(colorpalette.colors.filter(c => !colorpalette.back.includes(c)))
 	let controlPoints = []
 	let d = dist(x, y, x1, y1)
 	let segments = d * 0.8
@@ -873,7 +872,7 @@ function limbic(x, y, size, strokeNum) {
 	let x4 = x + cos(angle) * size * vari6
 	let y4 = y + sin(angle) * size * vari7
 	if (dPressed == false) {
-		push()
+		
 		pg.fill(hue(col3), saturation(col3), brightness(col3), random(0.2, 0.5))
 		pg.noStroke()
 		let length = dist(x1, y1, x2, y2)
@@ -899,7 +898,7 @@ function limbic(x, y, size, strokeNum) {
 			dot(x + xNoi, y + yNoi, weight)
 		}
 	} else {
-		push()
+		
 		pg.fill(hue(col3), saturation(col3), brightness(col3), random(0.2, 0.5))
 		pg.noStroke()
 		let length = dist(x1, y1, x2, y2)
@@ -919,7 +918,7 @@ function limbic(x, y, size, strokeNum) {
 			pg.rect(x, y, 2)
 		}
 	}
-	pop()
+	
 }
 
 function tex() {
