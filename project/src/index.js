@@ -1,7 +1,7 @@
 $fx.params([
   {
     id: "iteration",
-    name: "🔀",
+    name: "💌",
     type: "number",
     default: 100,
     options: {
@@ -16,7 +16,7 @@ $fx.params([
     type: "select",
     default: "8",
     options: {
-      options: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"],
+      options: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"],
     }
   },
   {

@@ -3,7 +3,6 @@ let dPressed = false
 let title = 'lamento'
 let saveTimeout
 let saving = false
-let repInfl
 
 let startTime
 let timeDisplay
@@ -41,11 +40,6 @@ function pxldrw(pxlDens, w, h) {
 	overl.pixelDensity(pxlDens)
 	printingCan.pixelDensity(pxlDens)
 
-	pg.smooth()
-	scribbles.smooth()
-	overl.smooth()
-	printingCan.smooth()
-
 	colorMode(HSB)
 	overl.colorMode(HSB)
 	pg.colorMode(HSB)
@@ -71,17 +65,57 @@ function pxldrw(pxlDens, w, h) {
 		limit = 2
 	}
 
+	repellorInfluence = [
+		[0, 30],
+		[2, 65],
+		[20, 5]
+	]
+	repInfl = weightedRnd(repellorInfluence)
+
+	crayonSize = [
+		[4, 60],
+		[6, 20],
+		[8, 20]
+	]
+	crayonSz = weightedRnd(crayonSize)
+
 	waveAngle = random(TWO_PI)
 	dotWaveFreq = random(0.001, 0.05)
 	dotWaveAmp = random(10, 50)
 	dotWaveThick = random(50, 250)
 	dotWaveStretch = random([HALF_PI, TWO_PI])
 
-	laughs = []
 	polygon = []
 
 	if (random() < 0.5) {
-		//polys 1
+		//poly grid
+		polyGridSize = random([2, 3])
+		margin = 50
+		cellWidth = (width - 2 * margin) / polyGridSize
+		cellHeight = (height - 2 * margin) / polyGridSize
+
+		for (let row = 0; row < polyGridSize; row++) {
+			for (let col = 0; col < polyGridSize; col++) {
+				polyNormalSides = random([4, 16])
+
+				const polyNormalX = margin + col * cellWidth + cellWidth / 2
+				const polyNormalY = margin + row * cellHeight + cellHeight / 2
+				const polyNormalRad = Math.min(cellWidth, cellHeight) / random([0.5, 1, 2, 3])
+
+				for (let i = 0; i < polyNormalSides; i++) {
+					let angle = map(i, 0, polyNormalSides, 0, TWO_PI)
+					let x = polyNormalX + cos(angle) * polyNormalRad
+					let y = polyNormalY + sin(angle) * polyNormalRad
+
+					x = constrain(x, margin, width - margin)
+					y = constrain(y, margin, height - margin)
+
+					polygon.push(createVector(x, y))
+				}
+			}
+		}
+	} else if (random() < 0.75) {
+		//polys chaos 1
 		polyChaosSides = random([8, 25])
 		polyChaosRad = height / 4
 
@@ -98,8 +132,8 @@ function pxldrw(pxlDens, w, h) {
 
 			polygon.push(createVector(x, y))
 		}
-	} else {
-		//polys 2
+	} else if (random() < 1) {
+		//polys chaos 2
 		for (let i = 0; i < 3; i++) {
 			polyNormalSides = random([8, 25])
 			polyNormalX = random(width - 50)
@@ -123,7 +157,7 @@ function pxldrw(pxlDens, w, h) {
 		radius: random(height / 10, height / 4),
 	}
 
-	background(backCol)
+	background(hue(backCol) - 5, saturation(backCol)-2, brightness(backCol))
 
 	vari1 = random(0, 4)
 	vari2 = random(0, 4)
@@ -140,7 +174,7 @@ function pxldrw(pxlDens, w, h) {
 
 		for (let i = 0; i < polygon.length - 1; i++) {
 			wobblyLineDrawn(polygon[i].x, polygon[i].y, polygon[i + 1].x, polygon[i + 1].y, 100)
-			wobblyLineDrawn(polygon[i].x, polygon[i].y, poiX, poiY, 100)
+			wobblyLineDrawn(polygon[i].x, polygon[i].y, poiX, poiY, 5)
 
 		}
 		wobblyLineDrawn(polygon[polygon.length - 1].x, polygon[polygon.length - 1].y, polygon[0].x, polygon[0].y, 100)
@@ -162,28 +196,6 @@ function pxldrw(pxlDens, w, h) {
 	walkX = random(width)
 	walkY = random(height)
 
-	scribWaveAngle = 0
-	scribbWaveX = random(width / 2)
-	scribbWaveY = random(height)
-
-	ribbonAngle = 0
-	ribbonX = 100
-	ribbonY = 50
-
-	shadingPenStartX = random(width - 100)
-	shadingPenStartY = random(height)
-	shadingAmp = 10
-	shadingFreq = 2
-	shadingRot = random(0, TWO_PI)
-
-	let repellorInfluence = [
-		[0, 30],
-		[2, 50],
-		[5, 15],
-		[20, 5]
-	]
-	repInfl = weightedRnd(repellorInfluence)
-
 	startTime = millis()
 	timeDisplay = createP()
 	timeDisplay.position(windowWidth - 150, 20)
@@ -203,13 +215,13 @@ function draw() {
 	}
 
 	if (counter > 20 && !stopCounter && dPressed == false) {
-		if (counter % 15 == 0) {
+		if (counter % 12 == 0) {
 			brushes()
 		}
 	}
 
 	if (!stopCounter) {
-		background(hue(backCol) - 5, saturation(backCol), brightness(backCol))
+		background(hue(backCol) - 5, saturation(backCol)-2, brightness(backCol))
 		limbic(width / 2, height / 2, 1000, 50)
 		image(pg, 0, height - (100 + counter * gridSize), width, height)
 
@@ -252,9 +264,11 @@ function draw() {
 		noLoop()
 		fxpreview()
 
-		if (pixelDensity() > 1) {
-			saveCanvas(title + fxhash + ".png")
-			saveCanvas(title + fxhash + ".jpg")
+		if (pixelDensity() <= 3 && pixelDensity() > 1) {
+			saveCanvas(title + "_" + $fx.getParam("iteration") + ".jpg")
+		} else if (pixelDensity() > 3) {
+			saveCanvas(title + "_" + $fx.getParam("iteration") + ".png")
+			saveCanvas(title + "_" + $fx.getParam("iteration") + ".jpg")
 		}
 	}
 	let endTime = millis()
@@ -305,11 +319,11 @@ function drawComposition() {
 			if (dPressed == false) {
 				dotHalftone(x, y, random(2, 3))
 			} else {
-				push()
+				pg.push()
 				pg.noStroke()
 				pg.fill(backCol)
 				pg.rect(x, y, random(2, 5))
-				pop()
+				pg.pop()
 			}
 		}
 
@@ -513,7 +527,6 @@ function digitalLine(x, y, x1, y1, wobbliness) {
 }
 
 function wobblyLineSegmentDrawn(x, y, x1, y1, wobbliness) {
-
 	let repellorX = bigCircle.center.x
 	let repellorY = bigCircle.center.y
 	let repellorSize = bigCircle.radius * 2
@@ -551,11 +564,11 @@ function wobblyLineSegmentDrawn(x, y, x1, y1, wobbliness) {
 		let briIndex = map(angle, -180, 180, -5, 5)
 		let col2 = colorzz[colorIndex]
 		if (taperswitch < 0.5) {
-			weight = baseWeight * map(1 - i / segments, 0, 1, 1.6, 4)
+			weight = baseWeight * map(1 - i / segments, 0, 1, 1.6, crayonSz)
 			saturationStart = saturation(col2) + 10
 			saturationEnd = saturation(col2)
 		} else {
-			weight = baseWeight * map(i / segments, 0, 1, 1.6, 4)
+			weight = baseWeight * map(i / segments, 0, 1, 1.6, crayonSz)
 			saturationStart = saturation(col2) - 8
 			saturationEnd = saturation(col2) + 8
 		}
@@ -570,6 +583,7 @@ function wobblyLineSegmentDrawn(x, y, x1, y1, wobbliness) {
 
 		// repellor forces with distance-based attenuation
 		let repellorForce = 0;
+
 		if (distanceToRepellor < repellorSize) {
 			repellorForce = map(distanceToRepellor, 0, repellorSize, repInfl, 0) //adding random([2, 5, 20]) to the force
 		}
@@ -745,11 +759,11 @@ function orbLineSegments(x, y, x1, y1, wobbliness) {
 		let colz = colorzz[colorIndex]
 
 		if (taperswitch < 0.5) {
-			weight = baseWeight * map(1 - i / segments, 0, 1, 3, 5)
+			weight = baseWeight * map(1 - i / segments, 0, 1, 3, crayonSz * 1.25)
 			saturationStart = saturation(colz) + 10
 			saturationEnd = saturation(colz)
 		} else {
-			weight = baseWeight * map(i / segments, 0, 1, 3, 5)
+			weight = baseWeight * map(i / segments, 0, 1, 3, crayonSz * 1.25)
 			saturationStart = saturation(colz) - 8
 			saturationEnd = saturation(colz) + 8
 		}
@@ -997,8 +1011,8 @@ function grain(grainAmount) {
 }
 
 function keyPressed() {
-	if (key == 'p') saveCanvas(title + fxhash + ".png")
-	if (key == 'j') saveCanvas(title + fxhash + ".jpg")
+	if (key == 'p') saveCanvas(title + "_" + $fx.getParam("iteration") + ".png")
+	if (key == 'j') saveCanvas(title + "_" + $fx.getParam("iteration") + ".jpg")
 
 	if ("1" == key) {
 		fxrandminter = sfc32(...hashes)
@@ -1114,7 +1128,7 @@ function touchEnded() {
 }
 
 function saveCan() {
-	saveCanvas(title + fxhash + ".jpg")
+	saveCanvas(title + "_" + $fx.getParam("iteration") + ".jpg")
 }
 
 function displayTime(time) {

@@ -17,47 +17,6 @@ function pencilPigments(x, y, r) {
 
 }
 
-function pencil(x, y, x1, y1, penCol) {
-    const wobbliness = 100
-    const controlPoints = []
-    const d = dist(x, y, x1, y1)
-    const segments = d * random(0.3, 0.5)
-
-    for (let i = 0; i <= segments; i++) {
-        const xEnd = x + ((x1 - x) * i) / segments
-        const yEnd = y + ((y1 - y) * i) / segments
-        const noiseFactor = noise(xEnd * 0.002, yEnd * 0.002)
-        const xOffset =
-            map(noiseFactor, 0, 1, -wobbliness, wobbliness) *
-            Math.sin(noiseFactor * TWO_PI * 2)
-        const yOffset =
-            map(noiseFactor, 0, 1, -wobbliness, wobbliness) *
-            Math.cos(noiseFactor * TWO_PI * 2)
-
-        controlPoints.push([xEnd + xOffset, yEnd + yOffset])
-    }
-
-    for (let i = 0; i < controlPoints.length - 1; i++) {
-        const startX = controlPoints[i][0]
-        const startY = controlPoints[i][1]
-        const endX = controlPoints[i + 1][0]
-        const endY = controlPoints[i + 1][1]
-
-        const pointsOnSegment = 2
-        for (let j = 0; j < pointsOnSegment; j++) {
-            const t = j / (pointsOnSegment - 1)
-            const pointX = startX + (endX - startX) * t
-            const pointY = startY + (endY - startY) * t
-
-            const weightVarFac = noise(pointX * 0.01, pointY * 0.01)
-            const weight = map(weightVarFac, 0, 1, height / 6000, height / 4000)
-
-            pg.fill(hue(penCol), saturation(penCol) + 100, brightness(penCol))
-            pencilPigments(pointX + random(-weight, weight), pointY + random(-weight, weight), weight)
-        }
-    }
-}
-
 function pencilArc(x, y, x1, y1) {
     const angleRndX = random(0.5, 2)
     const angleRndY = random(0.5, 2)
@@ -330,7 +289,7 @@ function brushes() {
     let x = random(width)
     let y = random(height)
     let thickRnd = random(3, 15)
-    let lenRnd = random(5, 20)
+    let lenRnd = random(5, 30)
     brushCol = random(colorpalette.colors)
 
     pg.push()
