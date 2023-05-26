@@ -97,10 +97,11 @@ function getColors() {
   } else if (dPressed == true) {
     backCol = '#191818'
   }
-  colorzz = colorpalette.colors.filter(c => !colorpalette.back.includes(c))
-  col3 = random(colorpalette.colors.filter(c => !colorpalette.back.includes(c)))
-  col4 = random(colorpalette.colors.filter(c => !colorpalette.back.includes(c)))
-  col5 = random(colorpalette.colors.filter(c => !colorpalette.back.includes(c)))
+  
+  colorzz = colorpalette.colors.filter(color => color !== backCol)
+  col3 = random(colorpalette.colors.filter(color => color !== backCol))
+  col4 = random(colorpalette.colors.filter(color => color !== backCol))
+  col5 = random(colorpalette.colors.filter(color => color !== backCol))
   shuffle(colorzz, true)
 
   if ($fx.getParam("colDist") == 'mono') {

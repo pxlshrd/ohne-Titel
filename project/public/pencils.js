@@ -85,7 +85,7 @@ function typoPencilPigments(x, y, r) {
 }
 
 function typoPencil(x, y, x1, y1) {
-    printingCol = random(colorpalette.colors.filter(c => !colorpalette.back.includes(c)))
+    printingCol = random(colorpalette.colors.filter(color => color !== backCol))
     const wobbliness = 100
     const controlPoints = []
     const d = dist(x, y, x1, y1)

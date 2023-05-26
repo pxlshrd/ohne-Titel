@@ -1,6 +1,6 @@
 let fPressed = false
 let dPressed = false
-let title = 'lamento'
+let title = 'time leaves dust'
 let saveTimeout
 let saving = false
 
@@ -10,7 +10,7 @@ let timeDisplay
 function setup() {
 	let pxlDens = 1
 	let w = 1500
-	let h = 2000
+	let h = w * 1.333
 	pxldrw(pxlDens, w, h)
 }
 
@@ -28,7 +28,7 @@ function pxldrw(pxlDens, w, h) {
 
 	randomSeed(seed)
 	noiseSeed(seed)
-	noiseDet = random([2, 5])
+	noiseDet = int(random(2, 5))
 	noiseDetFallOff = 0.5
 	noiseDetTexture = 6
 	noiseDetTexFallOff = 0.99
@@ -73,9 +73,9 @@ function pxldrw(pxlDens, w, h) {
 	repInfl = weightedRnd(repellorInfluence)
 
 	crayonSize = [
-		[4, 60],
+		[4, 40],
 		[6, 20],
-		[8, 20]
+		[8, 40]
 	]
 	crayonSz = weightedRnd(crayonSize)
 
@@ -87,71 +87,9 @@ function pxldrw(pxlDens, w, h) {
 
 	polygon = []
 
-	if (random() < 0.5) {
-		//poly grid
-		polyGridSize = random([2, 3])
-		margin = 50
-		cellWidth = (width - 2 * margin) / polyGridSize
-		cellHeight = (height - 2 * margin) / polyGridSize
-
-		for (let row = 0; row < polyGridSize; row++) {
-			for (let col = 0; col < polyGridSize; col++) {
-				polyNormalSides = random([4, 16])
-
-				const polyNormalX = margin + col * cellWidth + cellWidth / 2
-				const polyNormalY = margin + row * cellHeight + cellHeight / 2
-				const polyNormalRad = Math.min(cellWidth, cellHeight) / random([0.5, 1, 2, 3])
-
-				for (let i = 0; i < polyNormalSides; i++) {
-					let angle = map(i, 0, polyNormalSides, 0, TWO_PI)
-					let x = polyNormalX + cos(angle) * polyNormalRad
-					let y = polyNormalY + sin(angle) * polyNormalRad
-
-					x = constrain(x, margin, width - margin)
-					y = constrain(y, margin, height - margin)
-
-					polygon.push(createVector(x, y))
-				}
-			}
-		}
-	} else if (random() < 0.75) {
-		//polys chaos 1
-		polyChaosSides = random([8, 25])
-		polyChaosRad = height / 4
-
-		polyChaosSides = random([8, 25])
-		polyChaosRad = height / 4
-
-		for (let i = 0; i < polyChaosSides; i++) {
-			let angle = map(i, 0, polyChaosSides, 0, TWO_PI)
-			let x = random(width - 50) + cos(angle) * polyChaosRad
-			let y = random(height - 50) + sin(angle) * polyChaosRad / 2
-
-			x = constrain(x, 50, width - 50)
-			y = constrain(y, 50, height - 50)
-
-			polygon.push(createVector(x, y))
-		}
-	} else if (random() < 1) {
-		//polys chaos 2
-		for (let i = 0; i < 3; i++) {
-			polyNormalSides = random([8, 25])
-			polyNormalX = random(width - 50)
-			polyNormalY = random(height - 50)
-			polyNormalRad = height / 5
-			for (let i = 0; i < polyNormalSides; i++) {
-				let angle = map(i, 0, polyNormalSides, 0, TWO_PI)
-				let x = polyNormalX + cos(angle) * polyNormalRad
-				let y = polyNormalY + sin(angle) * polyNormalRad / random([0.5, 1, 2])
-
-				x = constrain(x, 50, width - 50)
-				y = constrain(y, 50, height - 50)
-
-				polygon.push(createVector(x, y))
-			}
-		}
-	}
-
+	sdfFoundation()
+	// duplicateAvoidX = map(Math.random(), 0, 1, -50, 50)
+	// duplicateAvoidY = map(Math.random(), 0, 1, -50, 50)
 	bigCircle = {
 		center: createVector(random(width), random(height)),
 		radius: random(height / 10, height / 4),
@@ -237,7 +175,7 @@ function draw() {
 
 	if (y > height - 50) {
 		stopCounter = true
-
+		// drawAsemicEraser()
 		if (dPressed == false) {
 			for (i = 0; i < 50; i++) {
 				texX = random(width)
@@ -361,6 +299,116 @@ function drawComposition() {
 				} else {
 					digitalLine(x, y, closestPoint.x, closestPoint.y, wobble)
 				}
+			}
+		}
+	}
+}
+
+function sdfFoundation() {
+	compositionChoice = random()
+
+	if (compositionChoice < 0.15) {
+		//rect grid horizontal
+		const numRectangles = int(random(3, 16))
+		const margin = 100
+		const rectHeight = (height - 2 * margin) / numRectangles
+		let rectFormation = random()
+
+		for (let i = 0; i < numRectangles; i++) {
+			const rectY = margin + i * rectHeight
+			if (rectFormation < 0.25) {
+				rectWidth = (width - 2 * margin) * (1 - i / (numRectangles - 1))
+			} else if (rectFormation < 0.5) {
+				rectWidth = (width - 2 * margin) * (i / (numRectangles - 1))
+			} else {
+				rectWidth = (width - 2 * margin)
+			}
+			const rectX = (width - rectWidth) / 2
+
+			const rectX1 = rectX + random(-20, 20)
+			const rectX2 = rectX + rectWidth + random(-20, 20)
+
+			polygon.push(createVector(rectX1, rectY + random(-20, 20)))
+			polygon.push(createVector(rectX2, rectY + random(-20, 20)))
+			polygon.push(createVector(rectX2, rectY + rectHeight + random(-20, 20)))
+			polygon.push(createVector(rectX1, rectY + rectHeight + random(-20, 20)))
+		}
+	} else if (compositionChoice < 0.2) {
+		//rect grid vertical
+		const numRectangles = int(random(2, 16))
+		console.log(numRectangles)
+		const margin = 50
+		const rectWidth = (width - 2 * margin) / numRectangles
+
+		for (let i = 0; i < numRectangles; i++) {
+			const rectX = margin + i * rectWidth
+
+			polygon.push(createVector(rectX + random(-20, 20), margin + random(-20, 20)))
+			polygon.push(createVector(rectX + rectWidth + random(-20, 20), margin + random(-20, 20)))
+			polygon.push(createVector(rectX + rectWidth + random(-20, 20), height - margin + random(-20, 20)))
+			polygon.push(createVector(rectX + random(-20, 20), height - margin + random(-20, 20)))
+		}
+	} else if (compositionChoice < 0.3) {
+		//poly grid
+		polyGridSize = random([2, 3])
+		margin = 50
+		cellWidth = (width - 2 * margin) / polyGridSize
+		cellHeight = (height - 2 * margin) / polyGridSize
+
+		for (let row = 0; row < polyGridSize; row++) {
+			for (let col = 0; col < polyGridSize; col++) {
+				polyNormalSides = int(random(4, 16))
+
+				const polyNormalX = margin + col * cellWidth + cellWidth / 2
+				const polyNormalY = margin + row * cellHeight + cellHeight / 2
+				const polyNormalRad = Math.min(cellWidth, cellHeight) / random([0.5, 1, 2, 3])
+
+				for (let i = 0; i < polyNormalSides; i++) {
+					let angle = map(i, 0, polyNormalSides, 0, TWO_PI)
+					let x = polyNormalX + cos(angle) * polyNormalRad
+					let y = polyNormalY + sin(angle) * polyNormalRad
+
+					x = constrain(x, margin, width - margin)
+					y = constrain(y, margin, height - margin)
+
+					polygon.push(createVector(x, y))
+				}
+			}
+		}
+	} else if (compositionChoice < 0.75) {
+		//polys chaos 1
+		polyChaosSides = int(random(8, 25))
+		polyChaosRad = height / 4
+
+		polyChaosSides = int(random(8, 25))
+		polyChaosRad = height / 4
+
+		for (let i = 0; i < polyChaosSides; i++) {
+			let angle = map(i, 0, polyChaosSides, 0, TWO_PI)
+			let x = random(width - 50) + cos(angle) * polyChaosRad
+			let y = random(height - 50) + sin(angle) * polyChaosRad / 2
+
+			x = constrain(x, 50, width - 50)
+			y = constrain(y, 50, height - 50)
+
+			polygon.push(createVector(x, y))
+		}
+	} else if (compositionChoice < 1) {
+		//polys chaos 2
+		for (let i = 0; i < 3; i++) {
+			polyNormalSides = int(random(8, 25))
+			polyNormalX = random(width - 50)
+			polyNormalY = random(height - 50)
+			polyNormalRad = height / 5
+			for (let i = 0; i < polyNormalSides; i++) {
+				let angle = map(i, 0, polyNormalSides, 0, TWO_PI)
+				let x = polyNormalX + cos(angle) * polyNormalRad
+				let y = polyNormalY + sin(angle) * polyNormalRad / random([0.5, 1, 2])
+
+				x = constrain(x, 50, width - 50)
+				y = constrain(y, 50, height - 50)
+
+				polygon.push(createVector(x, y))
 			}
 		}
 	}
@@ -642,7 +690,7 @@ function wobblyLineDrawn(x, y, x1, y1, wobbliness) {
 }
 
 function wobblyLineSegmentTex(x, y, x1, y1, wobbliness) {
-	let texCol = random(colorpalette.colors.filter(c => !colorpalette.back.includes(c)))
+	let texCol = random(colorpalette.colors.filter(color => color !== backCol))
 	let controlPoints = []
 	let d = dist(x, y, x1, y1)
 	let segments = d * 0.8
@@ -872,7 +920,7 @@ function limbic(x, y, size, strokeNum) {
 	let x4 = x + cos(angle) * size * vari6
 	let y4 = y + sin(angle) * size * vari7
 	if (dPressed == false) {
-		
+
 		pg.fill(hue(col3), saturation(col3), brightness(col3), random(0.2, 0.5))
 		pg.noStroke()
 		let length = dist(x1, y1, x2, y2)
@@ -898,7 +946,7 @@ function limbic(x, y, size, strokeNum) {
 			dot(x + xNoi, y + yNoi, weight)
 		}
 	} else {
-		
+
 		pg.fill(hue(col3), saturation(col3), brightness(col3), random(0.2, 0.5))
 		pg.noStroke()
 		let length = dist(x1, y1, x2, y2)
@@ -918,7 +966,7 @@ function limbic(x, y, size, strokeNum) {
 			pg.rect(x, y, 2)
 		}
 	}
-	
+
 }
 
 function tex() {
