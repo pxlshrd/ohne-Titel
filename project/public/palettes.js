@@ -98,7 +98,6 @@ function getPalettes(palettename) {
     },
   ]
 
-
   return random(palettes)
 }
 
