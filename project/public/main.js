@@ -16,7 +16,7 @@ function setup() {
 
 function pxldrw(pxlDens, w, h) {
 	fxrandminter = sfc32(...hashes)
-	let seed = fxrandminter() * $fx.getParam("iteration")
+	let seed = fxrand() * 123456789
 	counter = 0
 	stopCounter = false
 
@@ -128,10 +128,10 @@ function draw() {
 		fxpreview()
 
 		if (pixelDensity() <= 3 && pixelDensity() > 1) {
-			saveCanvas(title + "_" + $fx.getParam("iteration") + ".jpg")
+			saveCanvas(title + "_" + ".jpg")
 		} else if (pixelDensity() > 3) {
-			saveCanvas(title + "_" + $fx.getParam("iteration") + ".png")
-			saveCanvas(title + "_" + $fx.getParam("iteration") + ".jpg")
+			saveCanvas(title + "_" + ".png")
+			saveCanvas(title + "_" + ".jpg")
 		}
 	}
 
@@ -233,9 +233,9 @@ function drawComposition() {
 }
 
 function sdfFoundation() {
-	compositionChoice = $fx.getParam("comp")//random()
+	compositionChoice = random()
 
-	if (compositionChoice == "rect hor") {
+	if (compositionChoice < 0.1) {
 		//rect grid horizontal
 		const numRectangles = int(random(3, 16))
 		const margin = width / 15
@@ -254,7 +254,7 @@ function sdfFoundation() {
 			polygon.push(createVector(rectX2, rectY + rectHeight + random(-rndShift, rndShift)))
 			polygon.push(createVector(rectX1, rectY + rectHeight + random(-rndShift, rndShift)))
 		}
-	} else if (compositionChoice == "rect vert") {
+	} else if (compositionChoice < 0.2) {
 		//rect grid vertical
 		const numRectangles = int(random(2, 16))
 		const margin = width / 30
@@ -269,7 +269,7 @@ function sdfFoundation() {
 			polygon.push(createVector(rectX + rectWidth + random(-rndShift, rndShift), height - margin + random(-rndShift, rndShift)))
 			polygon.push(createVector(rectX + random(-rndShift, rndShift), height - margin + random(-rndShift, rndShift)))
 		}
-	} else if (compositionChoice == "rect collision") {
+	} else if (compositionChoice < 0.4) {
 		//rect grid collision
 		for (let i = 0; i < 10; i++) {
 			let x, y, w, h, pos, vectors;
@@ -295,7 +295,7 @@ function sdfFoundation() {
 		  }
 		  
 		  
-	} else if (compositionChoice == "polygrid") {
+	} else if (compositionChoice < 0.8) {
 		//poly grid
 		const polyGridSize = random([2, 3])
 		const margin = width / 30
@@ -322,7 +322,7 @@ function sdfFoundation() {
 				}
 			}
 		}
-	} else if (compositionChoice == "poly 3") {
+	} else if (compositionChoice < 0.9) {
 		//polys chaos 1
 		const polyChaosSides = int(random(8, 25))
 		const polyChaosRad = height / 4
@@ -338,7 +338,7 @@ function sdfFoundation() {
 
 			polygon.push(createVector(x, y))
 		}
-	} else if (compositionChoice == "poly chaos") {
+	} else if (compositionChoice < 1) {
 		//polys chaos 2
 		for (let i = 0; i < 3; i++) {
 			const polyNormalSides = int(random(8, 25))
@@ -415,6 +415,9 @@ function initglobalVariables() {
 	printsz = width / 21.428
 	walkX = random(width)
 	walkY = random(height)
+
+	colCount = random()
+	colorCount = random([0, 45, 90, 180])
 }
 
 function drawPolyOutlines() {
@@ -592,7 +595,7 @@ function dotHalftone(x, y, r) {
 }
 
 function digitalLine(x, y, x1, y1, wobbliness) {
-	if ($fx.getParam("colDist") == 'micro') {
+	if (colCount < 0.1) {
 		colorCount = random([0, 45, 90, 180])
 	}
 	let controlPoints = [];
@@ -634,7 +637,7 @@ function crayonLineSegment(x, y, x1, y1, wobbliness) {
 	// let attractorY = bigCircle.center.y
 	// let attractorSize = bigCircle.radius * 4
 
-	if ($fx.getParam("colDist") == 'micro') {
+	if (colCount < 0.1) {
 		colorCount = random([0, 45, 90, 180])
 	}
 	let controlPoints = []
@@ -920,7 +923,7 @@ function orbOutline(x, y, radius) {
 	let orbDrawStartStep = TWO_PI / density
 	let strkW = random(1, 3)
 
-	if ($fx.getParam("background") == "dark") {
+	if (backCol === '#191818') {
 		pg.fill('#DED5CA')
 	} else {
 		pg.fill(20, 10, 20)
@@ -1157,8 +1160,8 @@ function grain(grainAmount) {
 
 
 function keyPressed() {
-	if (key == 'p') saveCanvas(title + "_" + $fx.getParam("iteration") + ".png")
-	if (key == 'j') saveCanvas(title + "_" + $fx.getParam("iteration") + ".jpg")
+	if (key == 'p') saveCanvas(title + "_" + ".png")
+	if (key == 'j') saveCanvas(title + "_" + ".jpg")
 
 	if ("1" == key) {
 		fxrandminter = sfc32(...hashes)
@@ -1274,7 +1277,7 @@ function touchEnded() {
 }
 
 function saveCan() {
-	saveCanvas(title + "_" + $fx.getParam("iteration") + ".jpg")
+	saveCanvas(title + "_" + ".jpg")
 }
 
 function displayTime(time) {

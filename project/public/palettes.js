@@ -1,5 +1,4 @@
 function getPalettes(palettename) {
-  palettename = $fx.getParam("palette")
 
   let palettes = [
     {
@@ -56,7 +55,7 @@ function getPalettes(palettename) {
       'name': '11',
       'colors': ['#FFE436', '#56A36A', '#E1E6C8', '#425E44', '#548046', '#4D9447', '#409099', '#5892AD', '#72AFB5', '#A8B9BD'],
       'back': ['#E1E6C8', '#A8B9BD', '#425E44']
-    },  
+    },
     {
       'name': '12',
       'colors': ["#484B2F", "#999468", "#A6A676", "#D6CE93", "#EFEBCE", "#D8A48F", "#CA958C", "#BB8588", "#BDB88A", "#D6B09F"],
@@ -99,39 +98,30 @@ function getPalettes(palettename) {
     },
   ]
 
-  let selectedPalette = palettes.find(palette => palette.name === palettename)
-  return selectedPalette
+
+  return random(palettes)
 }
 
 function getColors() {
   colorpalette = getPalettes()
-
-  if ($fx.getParam("background") == "light") {
+  backColChooser = random()
+  if (backColChooser < 0.3) {
     backCol = colorpalette.back[0]
-  } else if ($fx.getParam("background") == "color 1") {
+  } else if (backColChooser < 0.6) {
     backCol = colorpalette.back[1]
-  } else if ($fx.getParam("background") == "color 2") {
+  } else if (backColChooser < 0.9) {
     backCol = colorpalette.back[2]
-  } else if ($fx.getParam("background") == "dark") {
+  } else if (backColChooser < 1) {
     backCol = '#191818'
   } else if (dPressed == true) {
     backCol = '#191818'
   }
 
-  
+
   colorzz = colorpalette.colors.filter(color => color !== backCol)
   col3 = random(colorpalette.colors.filter(color => color !== backCol))
   col4 = random(colorpalette.colors.filter(color => color !== backCol))
   col5 = random(colorpalette.colors.filter(color => color !== backCol))
   shuffle(colorzz, true)
 
-  if ($fx.getParam("colDist") == 'mono') {
-    colorCount = 0
-  } else if ($fx.getParam("colDist") == 'reduced 1') {
-    colorCount = 45
-  } else if ($fx.getParam("colDist") == 'reduced 2') {
-    colorCount = 90
-  } else if ($fx.getParam("colDist") == 'full palette') {
-    colorCount = 180
-  }
 }

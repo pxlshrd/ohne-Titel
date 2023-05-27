@@ -41,7 +41,7 @@ function pencilArc(x, y, x1, y1) {
         pointX = constrain(pointX, margin, width - margin)
         pointY = constrain(pointY, margin, height - margin)
 
-        if ($fx.getParam("background") == "dark") {
+        if (backCol === '#191818') {
             pg.fill('#DED5CA')
         } else {
             pg.fill(20, 10, 20)
@@ -120,7 +120,7 @@ function typoPencil(x, y, x1, y1) {
             const weightVarFac = noise(pointX * 0.01, pointY * 0.01)
             const weight = map(weightVarFac, 0, 1, height / 3000, height / 1000)
 
-            if ($fx.getParam("background") == "dark") {
+            if (backCol === '#191818') {
                 printingCan.fill('#DED5CA')
             } else {
                 printingCan.fill(20, 10, 20)
@@ -180,7 +180,7 @@ function printing(x, y, size) {
         typoPencil(centerX + size * 3.6, centerY, centerX + size * 3.8, centerY);
         typoPencil(centerX + size * 3.2, centerY - size * 0.8, centerX + size * 3.8, centerY - size * 0.8)
     } else {
-        if ($fx.getParam("background") == "dark") {
+        if (backCol === '#191818') {
             printingCan.stroke('#DED5CA')
         } else {
             printingCan.stroke(20, 10, 20)

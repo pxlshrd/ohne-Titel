@@ -40,7 +40,7 @@ function drawAsemic() {
 function drawWord(x, y, length) {
     pg.beginShape()
     pg.strokeWeight(width / 1500)
-    if ($fx.getParam("background") == "dark") {
+    if (backCol === '#191818') {
         pg.stroke(80, 0.15)
     } else if (backCol === '#4C4C70' || backCol === '#4B3663' || backCol === '#4F4F4F' || backCol === '#425E44' || backCol === '#494A3F') {
         pg.stroke(15, 0.5)
