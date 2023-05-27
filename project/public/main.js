@@ -595,7 +595,7 @@ function dotHalftone(x, y, r) {
 }
 
 function digitalLine(x, y, x1, y1, wobbliness) {
-	if (colCount < 0.1) {
+	if (colCount < 0.02) {
 		colorCount = random([0, 45, 90, 180])
 	}
 	let controlPoints = [];
@@ -637,7 +637,7 @@ function crayonLineSegment(x, y, x1, y1, wobbliness) {
 	// let attractorY = bigCircle.center.y
 	// let attractorSize = bigCircle.radius * 4
 
-	if (colCount < 0.1) {
+	if (colCount < 0.02) {
 		colorCount = random([0, 45, 90, 180])
 	}
 	let controlPoints = []
