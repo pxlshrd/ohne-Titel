@@ -235,7 +235,7 @@ function drawComposition() {
 function sdfFoundation() {
 	compositionChoice = random()
 
-	if (compositionChoice < 0.1) {
+	if (compositionChoice < 0.05) {
 		//rect grid horizontal
 		const numRectangles = int(random(3, 16))
 		const margin = width / 15
@@ -254,7 +254,7 @@ function sdfFoundation() {
 			polygon.push(createVector(rectX2, rectY + rectHeight + random(-rndShift, rndShift)))
 			polygon.push(createVector(rectX1, rectY + rectHeight + random(-rndShift, rndShift)))
 		}
-	} else if (compositionChoice < 0.2) {
+	} else if (compositionChoice < 0.1) {
 		//rect grid vertical
 		const numRectangles = int(random(2, 16))
 		const margin = width / 30
@@ -269,7 +269,7 @@ function sdfFoundation() {
 			polygon.push(createVector(rectX + rectWidth + random(-rndShift, rndShift), height - margin + random(-rndShift, rndShift)))
 			polygon.push(createVector(rectX + random(-rndShift, rndShift), height - margin + random(-rndShift, rndShift)))
 		}
-	} else if (compositionChoice < 0.4) {
+	} else if (compositionChoice < 0.3) {
 		//rect grid collision
 		for (let i = 0; i < 10; i++) {
 			let x, y, w, h, pos, vectors;
