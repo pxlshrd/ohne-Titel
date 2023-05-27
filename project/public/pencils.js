@@ -3,13 +3,12 @@ function pencilPigments(x, y, r) {
     pg.beginShape()
     const sides = random(4, 6)
     const increment = PI / sides
-    const randomOffset = random(1, 2)
-
+    const randomOffset = random(width / 1500, width / 750)
 
     for (let a = 0; a < TWO_PI; a += increment) {
         const angle = a + randomOffset
-        const sx = x + Math.cos(angle) * r + random(2, 4)
-        const sy = y + Math.sin(angle) * r + random(2, 4)
+        const sx = x + Math.cos(angle) * r + random(width / 750, width / 375)
+        const sy = y + Math.sin(angle) * r + random(width / 750, width / 375)
         pg.vertex(sx, sy)
     }
 
@@ -20,26 +19,27 @@ function pencilPigments(x, y, r) {
 function pencilArc(x, y, x1, y1) {
     const angleRndX = random(0.5, 2)
     const angleRndY = random(0.5, 2)
-    const arcRadius = dist(x, y, x1, y1) / 2;
-    const arcCenterX = (x + x1) / 2;
-    const arcCenterY = (y + y1) / 2;
+    const arcRadius = dist(x, y, x1, y1) / 2
+    const arcCenterX = (x + x1) / 2
+    const arcCenterY = (y + y1) / 2
 
-    const arcStartAngle = atan2(y - arcCenterY, x - arcCenterX);
-    const arcEndAngle = atan2(y1 - arcCenterY, x1 - arcCenterX);
+    const arcStartAngle = atan2(y - arcCenterY, x - arcCenterX)
+    const arcEndAngle = atan2(y1 - arcCenterY, x1 - arcCenterX)
 
     const pointsOnArc = random(200, 300)
-    const angleIncrement = (arcEndAngle - arcStartAngle) / pointsOnArc;
+    const angleIncrement = (arcEndAngle - arcStartAngle) / pointsOnArc
+    const margin = width / 30
 
     for (let j = 0; j <= pointsOnArc; j++) {
-        const angle = arcStartAngle + j * angleIncrement;
+        const angle = arcStartAngle + j * angleIncrement
         let pointX = arcCenterX + arcRadius * cos(angle * angleRndX)
         let pointY = arcCenterY + arcRadius * sin(angle * angleRndY)
 
-        const weightVarFac = noise(pointX * 0.01, pointY * 0.01);
-        const weight = map(weightVarFac, 0, 1, height / 6000, height / 4000);
+        const weightVarFac = noise(pointX * 0.01, pointY * 0.01)
+        const weight = map(weightVarFac, 0, 1, height / 6000, height / 4000)
 
-        pointX = constrain(pointX, 50, width - 50)
-        pointY = constrain(pointY, 50, height - 50)
+        pointX = constrain(pointX, margin, width - margin)
+        pointY = constrain(pointY, margin, height - margin)
 
         if ($fx.getParam("background") == "dark") {
             pg.fill('#DED5CA')
@@ -69,13 +69,13 @@ function typoPencilPigments(x, y, r) {
     printingCan.beginShape()
     const sides = random(4, 6)
     const increment = PI / sides
-    const randomOffset = random(1, 2)
+    const randomOffset = random(width / 1500, width / 750)
 
     printingCan.noStroke()
     for (let a = 0; a < TWO_PI; a += increment) {
         const angle = a + randomOffset
-        const sx = x + Math.cos(angle) * r + random(2, 4)
-        const sy = y + Math.sin(angle) * r + random(2, 4)
+        const sx = x + Math.cos(angle) * r + random(width / 750, width / 375)
+        const sy = y + Math.sin(angle) * r + random(width / 750, width / 375)
         printingCan.vertex(sx, sy)
     }
 
@@ -186,7 +186,7 @@ function printing(x, y, size) {
             printingCan.stroke(20, 10, 20)
         }
 
-        printingCan.strokeWeight(4)
+        printingCan.strokeWeight(width / 375)
         // P
         printingCan.line(centerX - size * 3.2, centerY - size * 0.8, centerX - size * 3.2, centerY + size * 0.8)
         printingCan.line(centerX - size * 3.2, centerY - size * 0.8, centerX - size * 2.4, centerY - size * 0.8)
@@ -238,13 +238,13 @@ function sprayPigments(x, y, r) {
         pg.beginShape()
         const sides = random(4, 6)
         const increment = PI / sides
-        const randomOffset = random(1, 2)
+        const randomOffset = random(width / 1500, width / 750)
 
 
         for (let a = 0; a < TWO_PI; a += increment) {
             const angle = a + randomOffset
-            const sx = x + Math.cos(angle) * r + random(2, 4)
-            const sy = y + Math.sin(angle) * r + random(2, 4)
+            const sx = x + Math.cos(angle) * r + random(width / 750, width / 375)
+            const sy = y + Math.sin(angle) * r + random(width / 750, width / 375)
             pg.vertex(sx, sy)
         }
 
@@ -263,21 +263,21 @@ function sprayPigments(x, y, r) {
 
 function sprayWalk() {
     for (let i = 0; i < 20; i++) {
-        sprayPigments(walkX + random(-10, 10), walkY + random(-10, 10), random(height / 2000, height / 1000))
+        sprayPigments(walkX + random(-width / 150, width / 150), walkY + random(-width / 150, width / 150), random(height / 2000, height / 1000))
 
         switch (random([0, 1, 2, 3])) {
             case 0:
-                walkX = walkX + random(10, 50);
-                break;
+                walkX = walkX + random(width / 150, width / 30)
+                break
             case 1:
-                walkX = walkX - random(10, 50);
-                break;
+                walkX = walkX - random(width / 150, width / 30)
+                break
             case 2:
-                walkY = walkY + random(10, 50);
-                break;
+                walkY = walkY + random(width / 150, width / 30)
+                break
             case 3:
-                walkY = walkY - random(10, 50);
-                break;
+                walkY = walkY - random(width / 150, width / 30)
+                break
         }
         walkX = constrain(walkX, 0, width);
         walkY = constrain(walkY, 0, height);
@@ -289,7 +289,7 @@ function brushes() {
     let x = random(width)
     let y = random(height)
     let thickRnd = random(3, 15)
-    let lenRnd = random(5, 30)
+    let lenRnd = random(width / 300, width / 50)
     brushCol = random(colorpalette.colors)
 
     pg.push()
@@ -311,11 +311,11 @@ function brushes() {
             let yCoord = amp * sin(angle) + noiseY * random(10, 20)
 
 
-            let px = xCoord - 10
+            let px = xCoord - width / 150
             let py = amp * sin(angle)
             let cx = xCoord
             let cy = yCoord
-            let nx = xCoord + 40
+            let nx = xCoord + width / 37.5
             let ny = amp * sin(angle)
 
             for (let t = 0; t <= 1; t += 0.1) {

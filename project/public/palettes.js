@@ -24,7 +24,7 @@ function getPalettes(palettename) {
     },
     {
       'name': '5',
-      'colors': ['#8CD8A8', '#E7A3D8', '#A1A2E6', '#89DCE5', '#F5FF62', '#FFA07A', '#B0C4DE', '#959CA6', '#FFE985', '#9EF0CF'],
+      'colors': ['#8CD8A8', '#E7A3D8', '#A1A2E6', '#89DCE5', '#F5FF62', '#FFA07A', '#B0C4DE', '#959CA6', '#383B40', '#9EF0CF'],
       'back': ['#959CA6', '#A1A2E6', '#F5FF62']
     },
     {
@@ -44,7 +44,7 @@ function getPalettes(palettename) {
     },
     {
       'name': '9',
-      'colors': ['#A9C9B3', '#4D4B48', '#787571', '#B3AEA8', '#DED5CA', '#E8B546', '#CC5A43', '#E8B546', '#CC5A43', '#A9C9B3'],
+      'colors': ['#A9C9B3', '#4D4B48', '#787571', '#403E3C', '#DED5CA', '#E8B546', '#CC5A43', '#E8B546', '#CC5A43', '#A9C9B3'],
       'back': ['#DED5CA', '#B3AEA8', '#A9C9B3']
     },
     {
@@ -69,13 +69,33 @@ function getPalettes(palettename) {
     },
     {
       'name': '14',
-      'colors': ["#FF6370", "#FF7592", "#FF88B5", "#FF9BDB", "#FFB2FF", "#D2ABFF", "#A8A0FF", "#8481FF", "#5E63FF", "#3B4EFF"],
+      'colors': ["#FF6370", "#FF7592", "#FF88B5", "#383B40", "#FFB2FF", "#D2ABFF", "#A8A0FF", "#8481FF", "#5E63FF", "#3B4EFF"],
       'back': ['#C9BCB1', '#8FA09D', "#D2ABFF"]
     },
     {
       'name': '15',
       'colors': ['#D68B71', '#A65B4A', '#E8CBAE', '#BD8D6C', '#8C634B', '#5F4834', '#A9B9AE', '#73857D', '#516361', '#343F4D'],
       'back': ['#C9BCB1', '#8FA09D', '#E4D0AC']
+    },
+    {
+      'name': '16',
+      'colors': ['#242B29', '#6F705F', '#668749', '#86AB5E', '#EDDB68', '#F57842', '#68A6A1', '#B8D8E6', '#B19AE3', '#FFD7D1'],
+      'back': ['#E4D0AC', '#FFD7D1', '#B8D8E6']
+    },
+    {
+      'name': '17',
+      'colors': ['#2B2B26', '#494A3F', '#6F705F', '#8D8C7C', '#ABA798', '#BFBDAC', '#D6D5BF', '#E3E3CA', '#D5DE28', '#7A68BD'],
+      'back': ['#D6D5BF', '#ABA798', '#494A3F']
+    },
+    {
+      'name': '18',
+      'colors': ['#2B2B26', '#494A3F', '#6F705F', '#8D8C7C', '#ABA798', '#BFBDAC', '#D6D051', '#E3E3CA', '#7CCFBD', '#2B83D6'],
+      'back': ['#D6D5BF', '#ABA798', '#494A3F']
+    },
+    {
+      'name': '19',
+      'colors': ['#02161C', '#152F30', '#767A4E', '#537341', '#C2402D', '#D6BA3E', '#DE905F', '#E3E3CA', '#E6DA9E', '#2B4F48'],
+      'back': ['#D6BA3E', '#E6DA9E', '#767A4E']
     },
   ]
 
@@ -97,6 +117,7 @@ function getColors() {
   } else if (dPressed == true) {
     backCol = '#191818'
   }
+
   
   colorzz = colorpalette.colors.filter(color => color !== backCol)
   col3 = random(colorpalette.colors.filter(color => color !== backCol))

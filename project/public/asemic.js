@@ -2,7 +2,7 @@
 //asemic
 function drawAsemic() {
     let gridSize = 10
-    asemicJitter = random(5, 20)
+    asemicJitter = random(width / 300, width / 75)
     let spaceBetweenWords
     let wordCountInRow = 5
     let rowCount = random([10, 20, 30, 40, 50])
@@ -12,9 +12,9 @@ function drawAsemic() {
     let availableHeight = asemicgridHeight - (rowCount + 1)
     let spaceBetweenRows = availableHeight / rowCount
 
-    let yOffset = gridSize + 50
+    let yOffset = gridSize + width / 30
     for (let row = 0; row < rowCount; row++) {
-        let xOffset = gridSize + 40
+        let xOffset = gridSize + width / 37.5
         let availableWidth = asemicgridWidth - 2 * gridSize
         let totalWordWidth = 0
         let wordLengths = []
@@ -39,10 +39,10 @@ function drawAsemic() {
 
 function drawWord(x, y, length) {
     pg.beginShape()
-    pg.strokeWeight(1)
+    pg.strokeWeight(width / 1500)
     if ($fx.getParam("background") == "dark") {
         pg.stroke(80, 0.15)
-    } else if (backCol === '#4C4C70' || backCol === '#4B3663' || backCol === '#4F4F4F' || backCol === '#425E44') {
+    } else if (backCol === '#4C4C70' || backCol === '#4B3663' || backCol === '#4F4F4F' || backCol === '#425E44' || backCol === '#494A3F') {
         pg.stroke(15, 0.5)
     } else {
         pg.stroke(20, 0.2)
