@@ -158,13 +158,11 @@ function drawComposition() {
 
 	y = width / 30 + counter * gridSize;
 	for (let x = width / 30; x < width - width / 30; x += gridSize) {
-
-		let minDist = Infinity
-		let nearestPolygon = null
-		let insidePolygon = false
-		let insideBigCircle = false
-
-		let distToPolygon = isPointInsidePolygon(x, y, polygon)
+		minDist = Infinity
+		nearestPolygon = null
+		insidePolygon = false
+		insideBigCircle = false
+		distToPolygon = isPointInsidePolygon(x, y, polygon)
 
 		if (distToPolygon < minDist) {
 			minDist = distToPolygon
@@ -173,7 +171,7 @@ function drawComposition() {
 
 		}
 
-		let distToBigCircle = dist(x, y, bigCircle.center.x, bigCircle.center.y) - bigCircle.radius
+		distToBigCircle = dist(x, y, bigCircle.center.x, bigCircle.center.y) - bigCircle.radius
 		if (distToBigCircle < minDist) {
 			minDist = distToBigCircle
 			insideBigCircle = (distToBigCircle <= 0)
@@ -273,28 +271,28 @@ function sdfFoundation() {
 		//rect grid collision
 		for (let i = 0; i < 10; i++) {
 			let x, y, w, h, pos, vectors;
-		  
+
 			do {
-			  x = random(50, width - 50);
-			  y = random(50, height - 50);
-			  w = random(50, 1000);
-			  h = random(50, 1000);
-			  pos = createVector(x, y);
-			  topLeft = pos.copy();
-			  topRight = createVector(x + w, y);
-			  bottomLeft = createVector(x, y + h);
-			  bottomRight = createVector(x + w, y + h);
-		  
-			  vectors = [topLeft, topRight, bottomRight, bottomLeft]; // Store the four vectors
+				x = random(50, width - 50);
+				y = random(50, height - 50);
+				w = random(50, 1000);
+				h = random(50, 1000);
+				pos = createVector(x, y);
+				topLeft = pos.copy();
+				topRight = createVector(x + w, y);
+				bottomLeft = createVector(x, y + h);
+				bottomRight = createVector(x + w, y + h);
+
+				vectors = [topLeft, topRight, bottomRight, bottomLeft]; // Store the four vectors
 			} while (checkRectCollision(vectors));
-		  
+
 			polygon.push(createVector(pos.x, pos.y))
 			polygon.push(createVector(topRight.x, topRight.y))
 			polygon.push(createVector(bottomRight.x, bottomRight.y))
 			polygon.push(createVector(bottomLeft.x, bottomLeft.y))
-		  }
-		  
-		  
+		}
+
+
 	} else if (compositionChoice == "polygrid") {
 		//poly grid
 		const polyGridSize = random([2, 3])
@@ -382,6 +380,11 @@ function initglobalVariables() {
 		limit = 2
 	}
 
+	minDist = Infinity
+	nearestPolygon = null
+	insidePolygon = false
+	insideBigCircle = false
+
 	repellorInfluence = [
 		[0, 30],
 		[2, 65],
@@ -442,32 +445,32 @@ function drawPolyOutlines() {
 
 function checkRectCollision(rectVectors) {
 	for (let i = 0; i < polygon.length; i++) {
-	  let other = polygon[i]
-	  for (let j = 0; j < other.length; j++) {
-		let corner = other[j]
-		if (
-		  rectVectors[0].x < corner.x &&
-		  rectVectors[1].x > corner.x &&
-		  rectVectors[0].y < corner.y &&
-		  rectVectors[3].y > corner.y
-		) {
-		  return true
+		let other = polygon[i]
+		for (let j = 0; j < other.length; j++) {
+			let corner = other[j]
+			if (
+				rectVectors[0].x < corner.x &&
+				rectVectors[1].x > corner.x &&
+				rectVectors[0].y < corner.y &&
+				rectVectors[3].y > corner.y
+			) {
+				return true
+			}
 		}
-	  }
 	}
 
 	if (
-	  rectVectors[0].x < 50 ||
-	  rectVectors[1].x > width - 50 ||
-	  rectVectors[0].y < 50 ||
-	  rectVectors[3].y > height - 50
+		rectVectors[0].x < 50 ||
+		rectVectors[1].x > width - 50 ||
+		rectVectors[0].y < 50 ||
+		rectVectors[3].y > height - 50
 	) {
-	  return true
+		return true
 	}
-  
+
 	return false
 }
-  
+
 function isPointInsidePolygon(px, py, vertices) {
 	let inside = false;
 	let i, j = vertices.length - 1;
@@ -663,19 +666,30 @@ function crayonLineSegment(x, y, x1, y1, wobbliness) {
 		let colorIndex = int(map(angle, -180, 180, 0, colorzz.length))
 		let briIndex = map(angle, -180, 180, -5, 5)
 		let col2 = colorzz[colorIndex]
+		if (sectionCol === col2) {
+			sectionCol = col3
+		}
+		if (col2 === col3) {
+			sectionCol = col4
+		}
 
 		if (taperswitch < 0.5) {
 			weight = baseWeight * map(1 - i / segments, 0, 1, width / 937.5, crayonSz)
 			saturationStart = saturation(col2) + 10
 			saturationEnd = saturation(col2)
+			saturationStart2 = saturation(sectionCol) + 10
+			saturationEnd2 = saturation(sectionCol)
 		} else {
 			weight = baseWeight * map(i / segments, 0, 1, width / 937.5, crayonSz)
 			saturationStart = saturation(col2) - 8
 			saturationEnd = saturation(col2) + 8
+			saturationStart2 = saturation(sectionCol) - 8
+			saturationEnd2 = saturation(sectionCol) + 8
 		}
 
 		noiseDetail(noiseDetTexture, noiseDetTexFallOff)
 		let saturationVal = map(i, 0, controlPoints.length, saturationStart, saturationEnd)
+		let saturationVal2 = map(i, 0, controlPoints.length, saturationStart2, saturationEnd2)
 		let colVarDet = map(noise(x * 0.05, y * 0.05), 0, 1, -3, 3)
 		noiseDetail(noiseDet, noiseDetFallOff)
 
@@ -701,8 +715,11 @@ function crayonLineSegment(x, y, x1, y1, wobbliness) {
 		// Apply force with distance-based attenuation
 		let finalX = pointX + repellorForce * (pointX - repellorX) * repellorDistanceNormalized// + attractorForce * (attractorX - pointX) * attractorDistanceNormalized
 		let finalY = pointY + repellorForce * (pointY - repellorY) * repellorDistanceNormalized// + attractorForce * (attractorY - pointY) * attractorDistanceNormalized
-
+		if (insidePolygon && $fx.getParam("colDist") == 'section') {
+			pg.stroke(hue(sectionCol), saturationVal2, brightness(sectionCol) + colVarDet + briIndex)
+		} else {
 			pg.stroke(hue(col2), saturationVal, brightness(col2) + colVarDet + briIndex)
+		}
 		pg.strokeWeight(weight + random(-width / 7500, width / 7500))
 		pg.point(finalX + rndX, finalY + rndY)
 	}
@@ -722,7 +739,7 @@ function crayonLine(x, y, x1, y1, wobbliness) {
 		let multY = Math.cos(noiseFactor * TWO_PI * 2)
 		let xOffset = map(noiseFactor, 0, 1, -wobbliness, wobbliness) * multX
 		let yOffset = map(noiseFactor, 0, 1, -wobbliness, wobbliness) * multY
-		
+
 		controlPoints.push([xEnd + xOffset, yEnd + yOffset])
 	}
 
@@ -944,9 +961,9 @@ function orbOutline(x, y, radius) {
 	pg.stroke(col3)
 	for (let i = 0; i < 1; i++) {
 		let currentorbDrawStart = orbDrawStart + i * orbDrawStartStep;
-		if (i === counter % density/2) {
-			let xOutl = x + cos(currentorbDrawStart/8) * radius*1.2 + random(-strkW, strkW);
-			let yOutl = y + sin(currentorbDrawStart/8) * radius*1.2 + random(-strkW, strkW);
+		if (i === counter % density / 2) {
+			let xOutl = x + cos(currentorbDrawStart / 8) * radius * 1.2 + random(-strkW, strkW);
+			let yOutl = y + sin(currentorbDrawStart / 8) * radius * 1.2 + random(-strkW, strkW);
 			xOutl = constrain(xOutl, 50, width - 50)
 			yOutl = constrain(yOutl, 50, height - 50)
 			pg.strokeWeight(2)
