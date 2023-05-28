@@ -390,9 +390,9 @@ function initglobalVariables() {
 	repInfl = weightedRnd(repellorInfluence)
 
 	crayonSize = [
-		[width / 375, 40],
+		[width / 375, 20],
 		[width / 250, 20],
-		[width / 187.5, 40]
+		[width / 187.5, 60]
 	]
 	crayonSz = weightedRnd(crayonSize)
 
