@@ -16,7 +16,7 @@ $fx.params([
     type: "select",
     default: "8",
     options: {
-      options: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"],
+      options: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"],
     }
   },
   {
@@ -34,7 +34,7 @@ $fx.params([
     type: "select",
     default: "reduced 1",
     options: {
-      options: ["mono", "reduced 1", "reduced 2", "full palette", "micro"],
+      options: ["mono", "reduced 1", "reduced 2", "full palette", "micro", "section"],
     }
   },
   {
@@ -43,7 +43,7 @@ $fx.params([
     type: "select",
     default: "polygrid",
     options: {
-      options: ["rect hor", "rect vert", "rect collision", "polygrid", "poly 3", "poly chaos"]
+      options: ["rect hor", "rect vert", "rect collision", "randomized rectangle grid", "polygrid", "poly 3", "poly chaos"]
     }
   },
 ]);

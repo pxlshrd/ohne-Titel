@@ -64,8 +64,8 @@ function getPalettes(palettename) {
     },
     {
       'name': '13',
-      'colors': ["#403533", "#7D6465", "#75332B", "#66654D", "#999468", "#C9BCB1", "#BDA7A2", "#DECEBF", "#8FA09D", "#BCD6CE"],
-      'back': ['#C9BCB1', '#8FA09D', '#7D6465']
+      'colors': ["#332E28", "#574636", "#A5AA49", "#6B7569", "#7D9681", "#E99F35", "#E6743A", "#CA8892", "#A38B7F", "#AFB4AE"],
+      'back': ['#C9BCB1', '#AFB4AE', '#7D9681']
     },
     {
       'name': '14',
@@ -117,6 +117,42 @@ function getPalettes(palettename) {
       'colors': ['#37342A', '#637053', '#8D9A84', '#8C854F', '#A9AF41', '#D6A949', '#D88248', '#E39D94', '#9C7280', '#EBD6A7'],
       'back': ['#EBD6A7', '#C3BA89', '#D6A949']
     },
+    {
+      'name': '24',
+      'colors': ['#403225', '#4D6E5C', '#7A7E72', '#9DA687', '#D9784C', '#BF8367', '#BD959B', '#D9B3AD', '#E4D2C4', '#F2EDDA'],
+      'back': ['#F2EDDA', '#7A7E72', '#BD959B']
+    },
+    {
+      'name': '25',
+      'colors': ['#0A3136', '#284F4A', '#386B60', '#5C8580', '#946B63', '#D47057', '#BA503F', '#F0D499', '#B6A186', '#DFD8BB'],
+      'back': ['#DFD8BB', '#B6A186', '#F0D499']
+    },
+    {
+      'name': '26',
+      'colors': ['#054833', '#165134', '#016549', '#04825A', '#009466', '#416130', '#8D6F01', '#BC7C00', '#B99B66', '#AFC199'],
+      'back': ['#DFD8BB', '#B99B66', '#04825A']
+    },
+    {
+      'name': '27',
+      'colors': ['#302231', '#5C303F', '#923B2F', '#E84723', '#F0754D', '#D49093', '#F8B949', '#9696B0', '#818C4F', '#FBECC5'],
+      'back': ['#FBECC5', '#9696B0', '#D49093']
+    },
+    {
+      'name': '28',
+      'colors': ["#1D1E0E", "#222B24", "#2C3C2F", "#4F6B54", "#72685D", "#A39489", "#DE897A", "#E8A290", "#DF8E36", "#DEBF97"],
+      'back': ['#DEBF97', '#72685D', '#A39489']
+    },
+    {
+      'name': '29',
+      'colors': ["#3B5D4C", "#597046", "#6C6F39", "#C4B773", "#E4BC36", "#8D8298", "#F35647", "#F5A584", "#B9A78A", "#F1DEC6"],
+      'back': ['#F1DEC6', '#B9A78A', '#8D8298']
+    },
+    {
+      'name': '30',
+      'colors': ["#232B40", "#5F71A3", "#203831", "#255B4E", "#2E7D69", "#494523", "#FBE24A", "#D1AA23", "#C2C2AF", "#E3D7BD"],
+      'back': ['#E3D7BD', '#C2C2AF', '#5F71A3']
+    },
+    
   ]
 
   let selectedPalette = palettes.find(palette => palette.name === palettename)
@@ -143,6 +179,7 @@ function getColors() {
   col3 = random(colorpalette.colors.filter(color => color !== backCol))
   col4 = random(colorpalette.colors.filter(color => color !== backCol))
   col5 = random(colorpalette.colors.filter(color => color !== backCol))
+  sectionCol = random(colorpalette.colors.filter(color => color !== backCol))
   shuffle(colorzz, true)
 
   if ($fx.getParam("colDist") == 'mono') {
@@ -153,5 +190,7 @@ function getColors() {
     colorCount = 90
   } else if ($fx.getParam("colDist") == 'full palette') {
     colorCount = 180
+  } else if ($fx.getParam("colDist") == 'section') {
+    colorCount = random([0, 45, 90, 180])
   }
 }
