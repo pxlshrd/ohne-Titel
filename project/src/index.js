@@ -43,7 +43,7 @@ $fx.params([
     type: "select",
     default: "polygrid",
     options: {
-      options: ["rect hor", "rect vert", "rect collision", "randomized rectangle grid", "polygrid", "poly 3", "poly chaos"]
+      options: ["rect hor", "rect vert", "rect collision", "randomized rectangle grid", "rhombuses", "polygrid", "poly 3", "poly chaos"]
     }
   },
 ]);

@@ -168,6 +168,7 @@ function initglobalVariables() {
 	]
 	repInfl = weightedRnd(repellorInfluence)
 
+	brushDir = random()
 	crayonSize = [
 		[width / 375, 20],
 		[width / 250, 20],
@@ -360,6 +361,28 @@ function sdfFoundation() {
 				polygon.push(createVector(rx + rw, ry))
 				polygon.push(createVector(rx + rw, ry + rh))
 				polygon.push(createVector(rx, ry + rh))
+			}
+		}
+	} else if (compositionChoice == "rhombuses") {
+		const numRhombusesRow = int(random(2, 10))
+		const numRhombusesColumn = int(random(2, 10))
+		const margin = 50
+		const rhombusWidth = (width - 2 * margin) / numRhombusesRow
+		const rhombusHeight = (height - 2 * margin) / numRhombusesColumn
+
+		for (let i = 0; i < numRhombusesColumn; i++) {
+			for (let j = 0; j < numRhombusesRow; j++) {
+				const rhombusX = margin + j * rhombusWidth
+				const rhombusY = margin + i * rhombusHeight
+				const rndShift = width / 75
+
+				const centerX = rhombusX + rhombusWidth / 2
+				const centerY = rhombusY + rhombusHeight / 2
+
+				polygon.push(createVector(centerX - rhombusWidth / 2 + random(-rndShift, rndShift), centerY + random(-rndShift, rndShift)))
+				polygon.push(createVector(centerX + random(-rndShift, rndShift), centerY + rhombusHeight / 2 + random(-rndShift, rndShift)))
+				polygon.push(createVector(centerX + rhombusWidth / 2 + random(-rndShift, rndShift), centerY + random(-rndShift, rndShift)))
+				polygon.push(createVector(centerX + random(-rndShift, rndShift), centerY - rhombusHeight / 2 + random(-rndShift, rndShift)))
 			}
 		}
 	} else if (compositionChoice == "polygrid") {
