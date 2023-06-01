@@ -152,7 +152,11 @@ function getPalettes(palettename) {
       'colors': ["#232B40", "#5F71A3", "#203831", "#255B4E", "#2E7D69", "#494523", "#FBE24A", "#D1AA23", "#C2C2AF", "#E3D7BD"],
       'back': ['#E3D7BD', '#C2C2AF', '#5F71A3']
     },
-    
+    {
+      'name': '31',
+      'colors': ["#1C2926", "#194A77", "#5198A6", "#4F425C", "#746085", "#807992", "#C1797C", "#E76E43", "#E8AD45", "#ECD8BD"],
+      'back': ['#ECD8BD', '#9C886D', '#807992']
+    },
   ]
 
   let selectedPalette = palettes.find(palette => palette.name === palettename)

@@ -114,11 +114,11 @@ function drawPolyOutlines() {
         let poiY = bigCircle.center.y
 
         for (let i = 0; i < polygon.length - 1; i++) {
-            crayonLine(polygon[i].x, polygon[i].y, polygon[i + 1].x, polygon[i + 1].y, 100)
-            crayonLine(polygon[i].x, polygon[i].y, poiX, poiY, 5)
+            polyCrayonLine(polygon[i].x, polygon[i].y, polygon[i + 1].x, polygon[i + 1].y, 100)
+            polyCrayonLine(polygon[i].x, polygon[i].y, poiX, poiY, 5)
 
         }
-        crayonLine(polygon[polygon.length - 1].x, polygon[polygon.length - 1].y, polygon[0].x, polygon[0].y, 100)
+        polyCrayonLine(polygon[polygon.length - 1].x, polygon[polygon.length - 1].y, polygon[0].x, polygon[0].y, 100)
 
     } else {
         pg.stroke(col3)
@@ -258,7 +258,7 @@ function crayonLineSegment(x, y, x1, y1, wobbliness) {
         let briIndex = map(angle, -180, 180, -5, 5)
         let col2 = colorzz[colorIndex]
 
-        if (brushDir < 0.70) {
+        if (brushDir < 0.50) {
             if (taperswitch < 0.5) {
                 weight = baseWeight * map(1 - i / segments, 0, 1, width / 937.5, crayonSz)
                 saturationStart = saturation(col2) + 10
@@ -304,7 +304,6 @@ function crayonLineSegment(x, y, x1, y1, wobbliness) {
         // Calculate the normalized distance from the center of the repellor/attractor
         let repellorDistanceNormalized = map(distanceToRepellor, 0, repellorSize, 1, 0)
         // let attractorDistanceNormalized = map(distanceToAttractor, 0, attractorSize, 1, 0);
-
         // Apply force with distance-based attenuation
         let finalX = pointX + repellorForce * (pointX - repellorX) * repellorDistanceNormalized// + attractorForce * (attractorX - pointX) * attractorDistanceNormalized
         let finalY = pointY + repellorForce * (pointY - repellorY) * repellorDistanceNormalized// + attractorForce * (attractorY - pointY) * attractorDistanceNormalized
@@ -322,7 +321,7 @@ function crayonLine(x, y, x1, y1, wobbliness) {
     taperswitch = random()
     let controlPoints = []
     let d = dist(x, y, x1, y1)
-    let segments = d * 0.05
+    let segments = d * random(0.02, 0.06)
 
     for (let i = 0; i <= segments; i++) {
         let xEnd = x + (x1 - x) * i / segments
@@ -341,7 +340,142 @@ function crayonLine(x, y, x1, y1, wobbliness) {
         startY = controlPoints[i][1]
         endX = controlPoints[i + 1][0]
         endY = controlPoints[i + 1][1]
-        rndspread = 2
+        rndspread = random(0, 5)
+
+        push()
+        crayonLineSegment(
+            startX + random(-rndspread, rndspread),
+            startY + random(-rndspread, rndspread),
+            endX + random(-rndspread, rndspread),
+            endY + random(-rndspread, rndspread),
+            5)
+        pop()
+    }
+
+}
+
+function polyCrayonLineSegment(x, y, x1, y1, wobbliness) {
+    let repellorX = bigCircle.center.x
+    let repellorY = bigCircle.center.y
+    let repellorSize = bigCircle.radius * 2
+
+    // let attractorX = bigCircle.center.x
+    // let attractorY = bigCircle.center.y
+    // let attractorSize = bigCircle.radius * 4
+
+    if ($fx.getParam("colDist") == 'micro') {
+        colorCount = random([0, 45, 90, 180])
+    }
+    let controlPoints = []
+    let d = dist(x, y, x1, y1)
+    let segments = d * 0.1
+
+    for (let i = 0; i <= segments; i++) {
+        let xEnd = x + (x1 - x) * i / segments
+        let yEnd = y + (y1 - y) * i / segments
+        noiseFactor = noise(xEnd * 0.01, yEnd * 0.01)
+        let xOffset = map(noiseFactor, 0, 1, -wobbliness, wobbliness) * Math.sin(noiseFactor * TWO_PI * 2)
+        let yOffset = map(noiseFactor, 0, 1, -wobbliness, wobbliness) * Math.cos(noiseFactor * TWO_PI * 2)
+        controlPoints.push([xEnd + xOffset, yEnd + yOffset])
+    }
+
+    for (let i = 0; i < controlPoints.length; i++) {
+        let pointX = controlPoints[i][0]
+        let pointY = controlPoints[i][1]
+        let baseWeight = width / 1250
+
+        let rndX = random(-width / 1500, width / 1500)
+        let rndY = random(-width / 1500, width / 1500)
+
+        let angle = atan2(endY - startY, endX - startX)
+        angle = (angle * colorCount) / PI
+        let colorIndex = int(map(angle, -180, 180, 0, colorzz.length))
+        let briIndex = map(angle, -180, 180, -5, 5)
+        let col2 = colorzz[colorIndex]
+
+        if (brushDir < 0.50) {
+            if (taperswitch < 0.5) {
+                weight = baseWeight * map(1 - i / segments, 0, 1, width / 937.5, crayonSz)
+                saturationStart = saturation(col2) + 10
+                saturationEnd = saturation(col2)
+                saturationStart2 = saturation(sectionCol) + 10
+                saturationEnd2 = saturation(sectionCol)
+            } else {
+                weight = baseWeight * map(i / segments, 0, 1, width / 937.5, crayonSz)
+                saturationStart = saturation(col2) - 8
+                saturationEnd = saturation(col2) + 8
+                saturationStart2 = saturation(sectionCol) - 8
+                saturationEnd2 = saturation(sectionCol) + 8
+            }
+        } else {
+            weight = baseWeight * map(1 - i / segments, 0, 1, width / 937.5, crayonSz)
+            saturationStart = saturation(col2) + 10
+            saturationEnd = saturation(col2)
+            saturationStart2 = saturation(sectionCol) + 10
+            saturationEnd2 = saturation(sectionCol)
+        }
+
+        noiseDetail(noiseDetTexture, noiseDetTexFallOff)
+        let saturationVal = map(i, 0, controlPoints.length, saturationStart, saturationEnd)
+        let saturationVal2 = map(i, 0, controlPoints.length, saturationStart2, saturationEnd2)
+        let colVarDet = map(noise(x * 0.05, y * 0.05), 0, 1, -3, 3)
+        noiseDetail(noiseDet, noiseDetFallOff)
+
+        let distanceToRepellor = dist(pointX, pointY, repellorX, repellorY)
+        // let distanceToAttractor = dist(pointX, pointY, attractorX, attractorY)
+
+        // repellor forces with distance-based attenuation
+        let repellorForce = 0
+
+        if (distanceToRepellor < repellorSize) {
+            repellorForce = map(distanceToRepellor, 0, repellorSize, repInfl, 0) //adding random([2, 5, 20]) to the force
+        }
+
+        // let attractorForce = 0;
+        // if (distanceToAttractor < attractorSize) {
+        // 	attractorForce = map(distanceToAttractor, 0, attractorSize, 0, 0); //4 4 the 4ce is good
+        // }
+
+        // Calculate the normalized distance from the center of the repellor/attractor
+        let repellorDistanceNormalized = map(distanceToRepellor, 0, repellorSize, 1, 0)
+        // let attractorDistanceNormalized = map(distanceToAttractor, 0, attractorSize, 1, 0);
+        // Apply force with distance-based attenuation
+        let finalX = pointX + repellorForce * (pointX - repellorX) * repellorDistanceNormalized// + attractorForce * (attractorX - pointX) * attractorDistanceNormalized
+        let finalY = pointY + repellorForce * (pointY - repellorY) * repellorDistanceNormalized// + attractorForce * (attractorY - pointY) * attractorDistanceNormalized
+        if (insidePolygon && $fx.getParam("colDist") == 'section') {
+            pg.stroke(hue(sectionCol), saturationVal2, brightness(sectionCol) + colVarDet + briIndex)
+        } else {
+            pg.stroke(hue(col2), saturationVal, brightness(col2) + colVarDet + briIndex)
+        }
+        pg.strokeWeight(weight + random(-width / 7500, width / 7500))
+        pg.point(finalX + rndX, finalY + rndY)
+    }
+}
+
+function polyCrayonLine(x, y, x1, y1, wobbliness) {
+    taperswitch = random()
+    let controlPoints = []
+    let d = dist(x, y, x1, y1)
+    let segments = d * random(0.01, 0.02)
+
+    for (let i = 0; i <= segments; i++) {
+        let xEnd = x + (x1 - x) * i / segments
+        let yEnd = y + (y1 - y) * i / segments
+        let noiseFactor = noise(xEnd * 0.002, yEnd * 0.002)
+        let multX = Math.sin(noiseFactor * TWO_PI * 2)
+        let multY = Math.cos(noiseFactor * TWO_PI * 2)
+        let xOffset = map(noiseFactor, 0, 1, -wobbliness, wobbliness) * multX
+        let yOffset = map(noiseFactor, 0, 1, -wobbliness, wobbliness) * multY
+
+        controlPoints.push([xEnd + xOffset, yEnd + yOffset])
+    }
+
+    for (let i = 0; i < controlPoints.length - 1; i++) {
+        startX = controlPoints[i][0]
+        startY = controlPoints[i][1]
+        endX = controlPoints[i + 1][0]
+        endY = controlPoints[i + 1][1]
+        rndspread = random(0, 5)
 
         push()
         crayonLineSegment(

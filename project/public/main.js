@@ -70,6 +70,7 @@ function pxldrw(pxlDens, w, h) {
 }
 
 function draw() {
+	y = width / 30 + counter * gridSize
 	if (counter < 1) {
 		drawAsemic()
 		printing(printX, printY, printsz)
@@ -161,18 +162,20 @@ function initglobalVariables() {
 	insidePolygon = false
 	insideBigCircle = false
 
+	concentricPolyCenter = random()
+
 	repellorInfluence = [
 		[0, 30],
-		[2, 65],
-		[20, 5]
+		[2, 68],
+		[20, 2]
 	]
 	repInfl = weightedRnd(repellorInfluence)
 
 	brushDir = random()
 	crayonSize = [
-		[width / 375, 20],
+		[width / 375, 10],
 		[width / 250, 20],
-		[width / 187.5, 60]
+		[width / 187.5, 70]
 	]
 	crayonSz = weightedRnd(crayonSize)
 
@@ -199,7 +202,6 @@ function initglobalVariables() {
 
 function drawComposition() {
 
-	y = width / 30 + counter * gridSize;
 	for (let x = width / 30; x < width - width / 30; x += gridSize) {
 		minDist = Infinity
 		nearestPolygon = null
@@ -275,6 +277,13 @@ function drawComposition() {
 
 function sdfFoundation() {
 	compositionChoice = $fx.getParam("comp")//random()
+
+	// duplicateAvoidX = map(Math.random(), 0, 1, -50, 50)
+	// duplicateAvoidY = map(Math.random(), 0, 1, -50, 50)
+	bigCircle = {
+		center: createVector(random(width), random(height)),
+		radius: random(height / 10, height / 4),
+	}
 
 	if (compositionChoice == "rect hor") {
 		//rect grid horizontal
@@ -363,6 +372,48 @@ function sdfFoundation() {
 				polygon.push(createVector(rx, ry + rh))
 			}
 		}
+	} else if (compositionChoice == "concentric poly") {
+		//concentric poly
+		const numCircles = int(random(5, 10))
+		const circleSpacing = random(height / 10, height / 7)
+		const maxVectors = 100
+		let vectorsPushed = 0
+		if (concentricPolyCenter < 0.5) {
+			centerX = bigCircle.center.x
+			centerY = bigCircle.center.y
+		} else if (concentricPolyCenter < 0.7){
+			centerX = width / 2
+			centerY = height / 2
+		} else {
+			centerX = random(width)
+			centerY = random(height)
+		}
+
+		for (let i = 0; i < numCircles; i++) {
+			const circleRadius = (i + 1) * circleSpacing
+			const numPoints = int(random(6, 15))
+
+			for (let j = 0; j < numPoints; j++) {
+				if (vectorsPushed >= maxVectors) {
+					break
+				}
+
+				const angle = map(j, 0, numPoints, 0, TWO_PI)
+				let x = centerX + cos(angle) * circleRadius
+				let y = centerY + sin(angle) * circleRadius
+
+				x = constrain(x, 50, width - 50)
+				y = constrain(y, 50, height - 50)
+
+				polygon.push(createVector(x, y))
+				vectorsPushed++
+			}
+
+			if (vectorsPushed >= maxVectors) {
+				break
+			}
+		}
+
 	} else if (compositionChoice == "rhombuses") {
 		const numRhombusesRow = int(random(2, 10))
 		const numRhombusesColumn = int(random(2, 10))
@@ -448,11 +499,5 @@ function sdfFoundation() {
 				polygon.push(createVector(x, y))
 			}
 		}
-	}
-	// duplicateAvoidX = map(Math.random(), 0, 1, -50, 50)
-	// duplicateAvoidY = map(Math.random(), 0, 1, -50, 50)
-	bigCircle = {
-		center: createVector(random(width), random(height)),
-		radius: random(height / 10, height / 4),
 	}
 }
