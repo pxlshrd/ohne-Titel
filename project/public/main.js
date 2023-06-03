@@ -143,7 +143,7 @@ function draw() {
 }
 
 function initglobalVariables() {
-	gridSize = width / 187.5
+	gridSize = 8
 	cnt = height - width / 30
 	orbDrawStart = random(0, 10)
 	if (random() < 0.05) {

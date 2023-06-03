@@ -322,6 +322,8 @@ function crayonLine(x, y, x1, y1, wobbliness) {
     let controlPoints = []
     let d = dist(x, y, x1, y1)
     let segments = d * random(0.02, 0.06)
+    segments = min(segments, 20)
+    console.log(segments)
 
     for (let i = 0; i <= segments; i++) {
         let xEnd = x + (x1 - x) * i / segments
@@ -351,7 +353,6 @@ function crayonLine(x, y, x1, y1, wobbliness) {
             5)
         pop()
     }
-
 }
 
 function polyCrayonLineSegment(x, y, x1, y1, wobbliness) {
