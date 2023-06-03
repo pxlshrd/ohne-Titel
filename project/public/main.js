@@ -156,11 +156,13 @@ function initglobalVariables() {
 	} else {
 		limit = 2
 	}
+	lengthOutside = random(width / 8, width / 5)
 
 	minDist = Infinity
 	nearestPolygon = null
 	insidePolygon = false
 	insideBigCircle = false
+	bigCircRad = random()
 
 	concentricPolyCenter = random()
 
@@ -207,12 +209,12 @@ function drawComposition() {
 		nearestPolygon = null
 		insidePolygon = false
 		insideBigCircle = false
-		distToPolygon = isPointInsidePolygon(x, y, polygon)
+		distToPolygon = isPip(x, y, polygon)
 
 		if (distToPolygon < minDist) {
 			minDist = distToPolygon
 			nearestPolygon = polygon
-			insidePolygon = isPointInsidePolygon(x, y, polygon)
+			insidePolygon = isPip(x, y, polygon)
 
 		}
 
@@ -252,7 +254,7 @@ function drawComposition() {
 					let closestPoint = closestPointOnPolygon(x, y, nearestPolygon)
 					let lineLength = dist(x, y, closestPoint.x, closestPoint.y)
 					let smoothEdging = random(-width / 50, width / 50)
-					if (lineLength > width / 5 + smoothEdging) {
+					if (lineLength > lengthOutside + smoothEdging) {
 						if (counter % limit == true) {
 							crayonLine(x, y, closestPoint.x, closestPoint.y, wobble)
 						}
@@ -280,9 +282,16 @@ function sdfFoundation() {
 
 	// duplicateAvoidX = map(Math.random(), 0, 1, -50, 50)
 	// duplicateAvoidY = map(Math.random(), 0, 1, -50, 50)
-	bigCircle = {
-		center: createVector(random(width), random(height)),
-		radius: random(height / 10, height / 4),
+	if (bigCircRad < 0.01) {
+		bigCircle = {
+			center: createVector(random(width), random(height)),
+			radius: height / 2
+		}
+	} else {
+		bigCircle = {
+			center: createVector(random(width), random(height)),
+			radius: random(height / 10, height / 4),
+		}
 	}
 
 	if (compositionChoice == "rect hor") {
@@ -381,7 +390,7 @@ function sdfFoundation() {
 		if (concentricPolyCenter < 0.5) {
 			centerX = bigCircle.center.x
 			centerY = bigCircle.center.y
-		} else if (concentricPolyCenter < 0.7){
+		} else if (concentricPolyCenter < 0.7) {
 			centerX = width / 2
 			centerY = height / 2
 		} else {

@@ -42,7 +42,7 @@ function drawWord(x, y, length) {
     pg.strokeWeight(width / 1500)
     if ($fx.getParam("background") == "dark") {
         pg.stroke(80, 0.15)
-    } else if (backCol === '#4C4C70' || backCol === '#4B3663' || backCol === '#4F4F4F' || backCol === '#425E44' || backCol === '#494A3F') {
+    } else if (backCol === '#4C4C70' || backCol === '#4B3663' || backCol === '#4F4F4F' || backCol === '#425E44' || backCol === '#494A3F' || backCol === '#72685D') {
         pg.stroke(15, 0.5)
     } else {
         pg.stroke(20, 0.2)

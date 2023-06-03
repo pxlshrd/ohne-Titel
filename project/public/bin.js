@@ -39,7 +39,7 @@ function checkRectCollision(rectVectors) {
     return false
 }
 
-function isPointInsidePolygon(px, py, vertices) {
+function isPip(px, py, vertices) {
     let inside = false
     let i, j = vertices.length - 1
 
