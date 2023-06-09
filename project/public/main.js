@@ -18,7 +18,7 @@ function setup() {
 
 function pxldrw(pxlDens, w, h) {
 	fxrandminter = sfc32(...hashes)
-	const seed = fxrand() * $fx.getParam("seeds")
+	const seed = fxrand() * 123456789
 	randomSeed(seed)
 	noiseSeed(seed)
 	counter = 0
