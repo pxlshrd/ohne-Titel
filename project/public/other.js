@@ -350,31 +350,37 @@ function keyPressed() {
 }
 
 function touchStarted() {
-    touchCount++;
+    touchCount++
   
     if (touches.length === 1) {
       saveTimeout = setTimeout(saveCan, 2000)
-      saving = true;
+      saving = true
     }
   
     if (touchCount === 5) {
-      saveCanvas('myCanvas', 'jpg');
-      touchCount = 0;  // reset the touch count after saving
+        fxrandminter = sfc32(...hashes)
+        counter = 0
+        closeLastRhombus = false
+        isFirstIteration = true
+        pxldrw(2, 1179, 2556)
+        loop()
+        draw()
+      touchCount = 0
     }
   }
   
   function touchMoved() {
-    // prevent default
-    return false;
+
+    return false
   }
   
   function touchEnded() {
     if (saving) {
       clearTimeout(saveTimeout)
-      saving = false;
+      saving = false
     }
-    // prevent default
-    return false;
+
+    return false
   }
   
   function saveCan() {
