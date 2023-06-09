@@ -1,6 +1,7 @@
 let title = 'time leaves dust'
 let fPressed = false
 let dPressed = false
+let touchCount = 0
 let saveTimeout
 let saving = false
 let closeLastRhombus = false
@@ -73,7 +74,7 @@ function pxldrw(pxlDens, w, h) {
 }
 
 function draw() {
-	y = width / 30 + counter * gridSize
+	y = 50 + counter * gridSize
 	if (counter < 1) {
 		drawAsemic()
 		printing(printX, printY, printsz)
@@ -91,19 +92,19 @@ function draw() {
 	if (!stopCounter) {
 		background(hue(backCol), saturation(backCol), brightness(backCol))
 		limbic(width / 2, height / 2, 1000, 50)
-		image(pg, 0, height - ((width / 15) + counter * gridSize), width, height)
+		image(pg, 0, height - (100 + counter * gridSize), width, height)
 
 
 		printingCan.fill(col3)
-		typoPencilPigments(printX - printsz * 4 + counter * 2.2, printY + printsz * 1.1 + random(-50, 10), random(height / 2000, height / 500))
-		image(printingCan, 0, height - ((width / 15) + counter * 1.2 * gridSize), width, height)
+		typoPencilPigments(printX - printsz * 4 + counter * 2.2, printY + printsz * 1.1 + random(-50, 10), random(1, 4))
+		image(printingCan, 0, height - (100 + counter * 1.2 * gridSize), width, height)
 		drawComposition()
 
 		sprayWalk()
 
 	}
 
-	if (y > height - (width / 30)) {
+	if (y > height - 50) {
 		stopCounter = true
 		noLoop()
 		// drawAsemicEraser()
@@ -111,7 +112,7 @@ function draw() {
 			for (i = 0; i < 50; i++) {
 				texX = random(width)
 				texY = random(height)
-				smallSprayLine(texX, texY, texX + random(-width / 3, width / 3), texY + random(-width / 3, width / 3), random(1, 10))
+				smallSprayLine(texX, texY, texX + random(-500, 500), texY + random(-500, 500), random(1, 10))
 			}
 			image(scribbles, 0, 0, width, height)
 
@@ -178,9 +179,9 @@ function initVars() {
 	brushDir = random()
 
 	crayonSize = [
-		[width / 375, 10],
-		[width / 250, 20],
-		[width / 187.5, 70]
+		[4, 10],
+		[6, 20],
+		[8, 70]
 	]
 	crayonSz = weightedRnd(crayonSize)
 
@@ -203,15 +204,15 @@ function initVars() {
 	vari7 = random(0, 4)
 
 	printX = width / 2
-	printY = width / 7.5
-	printsz = width / 21.428
+	printY = 200
+	printsz = 70
 	walkX = random(width)
 	walkY = random(height)
 }
 
 function drawComposition() {
 
-	for (let x = width / 30; x < width - width / 30; x += gridSize) {
+	for (let x = 50; x < width - 50; x += gridSize) {
 		minDist = Infinity
 		nearestPolygon = null
 		insidePolygon = false
@@ -233,12 +234,12 @@ function drawComposition() {
 
 		if (!insidePolygon && !insideBigCircle && random() < 0.7) {
 			if (!dPressed) {
-				dotHalftone(x, y, random(width / 750, width / 500))
+				dotHalftone(x, y, random(2, 3))
 			} else {
 				pg.push()
 				pg.noStroke()
 				pg.fill(backCol)
-				pg.rect(x, y, random(width / 750, width / 300))
+				pg.rect(x, y, random(2, 5))
 				pg.pop()
 			}
 		}
@@ -249,7 +250,7 @@ function drawComposition() {
 				drawOrb(x, y, wobble)
 				orbOutline(bigCircle.center.x, bigCircle.center.y, bigCircle.radius)
 			} else {
-				rectz(x, y, random(width / 187.5, width / 150))
+				rectz(x, y, random(8, 10))
 			}
 		}
 
@@ -260,7 +261,7 @@ function drawComposition() {
 				if (random() < 0.3) {
 					const closestPoint = closestPointOnPolygon(x, y, nearestPolygon)
 					const lineLength = dist(x, y, closestPoint.x, closestPoint.y)
-					const smoothEdging = random(-width / 50, width / 50)
+					const smoothEdging = random(-30, 30)
 					if (lineLength > lengthOutside + smoothEdging) {
 						if (counter % limit) {
 							crayonLine(x, y, closestPoint.x, closestPoint.y, wobble)
@@ -272,7 +273,7 @@ function drawComposition() {
 			} else {
 				const closestPoint = closestPointOnPolygon(x, y, nearestPolygon)
 				const lineLength = dist(x, y, closestPoint.x, closestPoint.y)
-				if (lineLength > width / 5) {
+				if (lineLength > 300) {
 					if (counter % limit) {
 						digitalLine(x, y, closestPoint.x, closestPoint.y, wobble)
 					}
@@ -316,14 +317,14 @@ function sdfFoundation() {
 		rectHor = true
 		//rect grid horizontal
 		const numRectangles = int(random(3, 16))
-		const margin = width / 15
+		const margin = 100
 		const rectHeight = (height - 2 * margin) / numRectangles
 
 		for (let i = 0; i < numRectangles; i++) {
 			const rectY = margin + i * rectHeight
 			const rectWidth = (width - 2 * margin)
 			const rectX = (width - rectWidth) / 2
-			const rndShift = width / 75
+			const rndShift = 20
 			const rectX1 = rectX + random(-rndShift, rndShift)
 			const rectX2 = rectX + rectWidth + random(-rndShift, rndShift)
 
@@ -336,14 +337,14 @@ function sdfFoundation() {
 		rectVert = true
 		//rect grid vertical
 		const numRectangles = int(random(3, 16))
-		const margin = height / 15
+		const margin = 100
 		const rectWidth = (width - 2 * margin) / numRectangles
 
 		for (let i = 0; i < numRectangles; i++) {
 			const rectX = margin + i * rectWidth
 			const rectHeight = (height - 2 * margin)
 			const rectY = (height - rectHeight) / 2
-			const rndShift = height / 75
+			const rndShift = 20
 			const rectY1 = rectY + random(-rndShift, rndShift)
 			const rectY2 = rectY + rectHeight + random(-rndShift, rndShift)
 
@@ -362,8 +363,8 @@ function sdfFoundation() {
 			do {
 				x = random(50, width - 50)
 				y = random(50, height - 50)
-				w = random(50, 1000)
-				h = random(50, 1000)
+				w = random(width / 30, width / 1.5)
+				h = random(width / 30, width / 1.5)
 				pos = createVector(x, y)
 				topLeft = pos.copy()
 				topRight = createVector(x + w, y)
@@ -405,6 +406,7 @@ function sdfFoundation() {
 		}
 	} else if (compositionChoice < 0.3) {
 		spiral = true
+		//spiral
 		let numElements = 100
 		let spiralRadiusIncrement = random(8, 15)
 		let angleIncrement = random(0.1, 1)
@@ -462,45 +464,45 @@ function sdfFoundation() {
 	} else if (compositionChoice < 0.55) {
 		rhombuses = true
 		//rhombuses
-		const numRhombusesRow = int(random(2, 10));
-		const numRhombusesColumn = int(random(2, 10));
-		const margin = 50;
-		const rhombusWidth = (width - 2 * margin) / numRhombusesRow;
-		const rhombusHeight = (height - 2 * margin) / numRhombusesColumn;
+		const numRhombusesRow = int(random(2, 10))
+		const numRhombusesColumn = int(random(2, 10))
+		const margin = 50
+		const rhombusWidth = (width - 2 * margin) / numRhombusesRow
+		const rhombusHeight = (height - 2 * margin) / numRhombusesColumn
 
 		for (let i = 0; i < numRhombusesColumn; i++) {
 			for (let j = 0; j < numRhombusesRow; j++) {
-				const rhombusX = margin + j * rhombusWidth;
-				const rhombusY = margin + i * rhombusHeight;
-				const centerX = rhombusX + rhombusWidth / 2;
-				const centerY = rhombusY + rhombusHeight / 2;
+				const rhombusX = margin + j * rhombusWidth
+				const rhombusY = margin + i * rhombusHeight
+				const centerX = rhombusX + rhombusWidth / 2
+				const centerY = rhombusY + rhombusHeight / 2
 
 				if (isFirstIteration && i === 0 && j === 0) {
 					// Create the first rhombus
-					polygon.push(createVector(centerX - rhombusWidth / 2, centerY));
-					polygon.push(createVector(centerX, centerY + rhombusHeight / 2));
-					polygon.push(createVector(centerX + rhombusWidth / 2, centerY));
-					polygon.push(createVector(centerX, centerY - rhombusHeight / 2));
+					polygon.push(createVector(centerX - rhombusWidth / 2, centerY))
+					polygon.push(createVector(centerX, centerY + rhombusHeight / 2))
+					polygon.push(createVector(centerX + rhombusWidth / 2, centerY))
+					polygon.push(createVector(centerX, centerY - rhombusHeight / 2))
 				}
 
-				polygon.push(createVector(centerX - rhombusWidth / 2, centerY));
-				polygon.push(createVector(centerX, centerY + rhombusHeight / 2));
-				polygon.push(createVector(centerX + rhombusWidth / 2, centerY));
-				polygon.push(createVector(centerX, centerY - rhombusHeight / 2));
+				polygon.push(createVector(centerX - rhombusWidth / 2, centerY))
+				polygon.push(createVector(centerX, centerY + rhombusHeight / 2))
+				polygon.push(createVector(centerX + rhombusWidth / 2, centerY))
+				polygon.push(createVector(centerX, centerY - rhombusHeight / 2))
 				if (i === numRhombusesColumn - 1 && j === numRhombusesRow - 1) {
-					closeLastRhombus = true;
+					closeLastRhombus = true
 				}
 			}
 			if (closeLastRhombus) {
-				const rhombusX = margin + (numRhombusesRow - 1) * rhombusWidth;
-				const rhombusY = margin + (numRhombusesColumn - 1) * rhombusHeight;
-				const centerX = rhombusX + rhombusWidth / 2;
-				const centerY = rhombusY + rhombusHeight / 2;
+				const rhombusX = margin + (numRhombusesRow - 1) * rhombusWidth
+				const rhombusY = margin + (numRhombusesColumn - 1) * rhombusHeight
+				const centerX = rhombusX + rhombusWidth / 2
+				const centerY = rhombusY + rhombusHeight / 2
 
-				polygon.push(createVector(centerX - rhombusWidth / 2, centerY));
-				polygon.push(createVector(centerX, centerY + rhombusHeight / 2));
-				polygon.push(createVector(centerX + rhombusWidth / 2, centerY));
-				polygon.push(createVector(centerX, centerY - rhombusHeight / 2));
+				polygon.push(createVector(centerX - rhombusWidth / 2, centerY))
+				polygon.push(createVector(centerX, centerY + rhombusHeight / 2))
+				polygon.push(createVector(centerX + rhombusWidth / 2, centerY))
+				polygon.push(createVector(centerX, centerY - rhombusHeight / 2))
 			}
 
 		}
@@ -509,7 +511,7 @@ function sdfFoundation() {
 		polyGrid = true
 		//poly grid
 		const polyGridSize = random([2, 3])
-		const margin = width / 30
+		const margin = 50
 		const cellWidth = (width - 2 * margin) / polyGridSize
 		const cellHeight = (height - 2 * margin) / polyGridSize
 
@@ -538,7 +540,7 @@ function sdfFoundation() {
 		//polys chaos 1
 		const polyChaosSides = int(random(8, 25))
 		const polyChaosRad = height / 4
-		const margin = width / 30
+		const margin = 50
 
 		for (let i = 0; i < polyChaosSides; i++) {
 			const angle = map(i, 0, polyChaosSides, 0, TWO_PI)
@@ -555,7 +557,7 @@ function sdfFoundation() {
 		//polys chaos 2
 		for (let i = 0; i < 3; i++) {
 			const polyNormalSides = int(random(8, 25))
-			const margin = width / 30
+			const margin = 50
 			const polyNormalX = random(width - margin)
 			const polyNormalY = random(height - margin)
 			const polyNormalRad = height / 5

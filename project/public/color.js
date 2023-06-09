@@ -1,4 +1,4 @@
-function getPalettes(palettename) {
+function getPalettes() {
 
   let palettes = [
     {

@@ -148,7 +148,7 @@ function rectz(x, y, rectSz) {
 function dot(x, y, r) {
     const sides = random(2, 4)
     const increment = PI / sides
-    const randomOffset = random(width / 1500, width / 750)
+    const randomOffset = random(1, 2)
     pg.beginShape()
     for (let a = 0; a < TWO_PI; a += increment) {
         const angle = a + randomOffset
@@ -162,14 +162,14 @@ function dot(x, y, r) {
 function dotHalftone(x, y, r) {
     const sides = random(2, 4)
     const increment = PI / sides
-    const randomOffset = random(width / 1500, width / 750)
+    const randomOffset = random(1, 2)
     pg.fill(backCol)
     pg.noStroke()
     pg.beginShape()
     for (let a = 0; a < TWO_PI; a += increment) {
         const angle = a + randomOffset
-        const sx = x + Math.cos(angle) * r + random(width / 750, width / 375)
-        const sy = y + Math.sin(angle) * r + random(width / 750, width / 375)
+        const sx = x + Math.cos(angle) * r + random(2, 4)
+        const sy = y + Math.sin(angle) * r + random(2, 4)
         pg.curveVertex(sx, sy)
     }
     pg.endShape(CLOSE)
@@ -178,7 +178,7 @@ function dotHalftone(x, y, r) {
 function dotOutlineTop(x, y, r) {
     const sides = random(2, 4)
     const increment = PI / sides
-    const randomOffset = random(width / 1500, width / 750)
+    const randomOffset = random(1, 2)
     polyOutTop.beginShape()
     for (let a = 0; a < TWO_PI; a += increment) {
         const angle = a + randomOffset
@@ -337,25 +337,49 @@ function keyPressed() {
         loop()
         draw()
     }
+
+    if ("w" === key) {
+        fxrandminter = sfc32(...hashes)
+        counter = 0
+        closeLastRhombus = false
+        isFirstIteration = true
+        pxldrw(2, 1179, 2556)
+        loop()
+        draw()
+    }
 }
 
 function touchStarted() {
+    touchCount++;
+  
     if (touches.length === 1) {
-        saveTimeout = setTimeout(saveCan, 2000)
-        saving = true
+      saveTimeout = setTimeout(saveCan, 2000)
+      saving = true;
     }
-}
-
-function touchEnded() {
+  
+    if (touchCount === 5) {
+      saveCanvas('myCanvas', 'jpg');
+      touchCount = 0;  // reset the touch count after saving
+    }
+  }
+  
+  function touchMoved() {
+    // prevent default
+    return false;
+  }
+  
+  function touchEnded() {
     if (saving) {
-        clearTimeout(saveTimeout)
-        saving = false
+      clearTimeout(saveTimeout)
+      saving = false;
     }
-}
-
-function saveCan() {
+    // prevent default
+    return false;
+  }
+  
+  function saveCan() {
     saveCanvas(title + "_" + $fx.getParam("seeds") + ".jpg")
-}
+  }
 
 function displayTime(time) {
     let display = nf(time, 0, 2)

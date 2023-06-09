@@ -13,7 +13,7 @@ function drawPolyOutlines() {
         }
     } else {
         pg.stroke(col3)
-        pg.strokeWeight(width * 0.00133)
+        pg.strokeWeight(2)
         for (let i = 0; i < polygon.length - 1; i++) {
             pg.line(polygon[i].x, polygon[i].y, polygon[i + 1].x, polygon[i + 1].y)
         }
@@ -64,10 +64,10 @@ function polyCrayonLineSegment(x, y, x1, y1, wobbliness) {
     for (let i = 0; i < controlPoints.length; i++) {
         const pointX = controlPoints[i][0]
         const pointY = controlPoints[i][1]
-        const baseWeight = width / 1250
+        const baseWeight = 1.2
 
-        const rndX = random(-width / 1500, width / 1500)
-        const rndY = random(-width / 1500, width / 1500)
+        const rndX = random(-1, 1)
+        const rndY = random(-1, 1)
 
         const angle = atan2(endY - startY, endX - startX)
         angle = (angle * colorCount) / PI
@@ -77,20 +77,20 @@ function polyCrayonLineSegment(x, y, x1, y1, wobbliness) {
 
         if (brushDir < 0.50) {
             if (taperswitch < 0.5) {
-                weight = baseWeight * map(1 - i / segments, 0, 1, width / 937.5, crayonSz)
+                weight = baseWeight * map(1 - i / segments, 0, 1, 1.6, crayonSz)
                 saturationStart = saturation(col2) + 10
                 saturationEnd = saturation(col2)
                 saturationStart2 = saturation(sectionCol) + 10
                 saturationEnd2 = saturation(sectionCol)
             } else {
-                weight = baseWeight * map(i / segments, 0, 1, width / 937.5, crayonSz)
+                weight = baseWeight * map(i / segments, 0, 1, 1.6, crayonSz)
                 saturationStart = saturation(col2) - 8
                 saturationEnd = saturation(col2) + 8
                 saturationStart2 = saturation(sectionCol) - 8
                 saturationEnd2 = saturation(sectionCol) + 8
             }
         } else {
-            weight = baseWeight * map(1 - i / segments, 0, 1, width / 937.5, crayonSz)
+            weight = baseWeight * map(1 - i / segments, 0, 1, 1.6, crayonSz)
             saturationStart = saturation(col2) + 10
             saturationEnd = saturation(col2)
             saturationStart2 = saturation(sectionCol) + 10
@@ -129,7 +129,7 @@ function polyCrayonLineSegment(x, y, x1, y1, wobbliness) {
         } else {
             pg.stroke(hue(col2), saturationVal, brightness(col2) + colVarDet + briIndex)
         }
-        pg.strokeWeight(weight + random(-width / 7500, width / 7500))
+        pg.strokeWeight(weight + random(-0.2, 0.2))
         pg.point(finalX + rndX, finalY + rndY)
     }
 }
@@ -216,7 +216,7 @@ function polyCrayonLineTopSegment(x, y, x1, y1) {
             polyOutTop.fill(20, 10, 20)
         }
         polyOutTop.noStroke()
-        pencilPigmentsPolyOut(finalX, finalY, random(height / 4000, height / 2000))
+        pencilPigmentsPolyOut(finalX, finalY, random(0.5, 1))
     }
 }
 
@@ -287,7 +287,7 @@ function digitalLine(x, y, x1, y1, wobbliness) {
         const colorIndex = int(map(angle, -180, 180, 0, colorzz.length))
         const col2 = colorzz[colorIndex]
 
-        pg.strokeWeight(width / 1500)
+        pg.strokeWeight(1)
         pg.stroke(hue(col2), saturation(col2), brightness(col2))
         pg.line(startX, startY, endX, endY)
     }
@@ -323,10 +323,10 @@ function crayonLineSegment(x, y, x1, y1, wobbliness) {
     for (let i = 0; i < controlPoints.length; i++) {
         const pointX = controlPoints[i][0]
         const pointY = controlPoints[i][1]
-        const baseWeight = width / 1250
+        const baseWeight = 1.2
 
-        const rndX = random(-width / 1500, width / 1500)
-        const rndY = random(-width / 1500, width / 1500)
+        const rndX = random(-1, 1)
+        const rndY = random(-1, 1)
 
         if (!colDist.wave) {
 
@@ -355,20 +355,20 @@ function crayonLineSegment(x, y, x1, y1, wobbliness) {
 
         if (brushDir < 0.50) {
             if (taperswitch < 0.5) {
-                weight = baseWeight * map(1 - i / segments, 0, 1, width / 937.5, crayonSz)
+                weight = baseWeight * map(1 - i / segments, 0, 1, 1.6, crayonSz)
                 saturationStart = saturation(col2) + 10
                 saturationEnd = saturation(col2)
                 saturationStart2 = saturation(sectionCol) + 10
                 saturationEnd2 = saturation(sectionCol)
             } else {
-                weight = baseWeight * map(i / segments, 0, 1, width / 937.5, crayonSz)
+                weight = baseWeight * map(i / segments, 0, 1, 1.6, crayonSz)
                 saturationStart = saturation(col2) - 8
                 saturationEnd = saturation(col2) + 8
                 saturationStart2 = saturation(sectionCol) - 8
                 saturationEnd2 = saturation(sectionCol) + 8
             }
         } else {
-            weight = baseWeight * map(1 - i / segments, 0, 1, width / 937.5, crayonSz)
+            weight = baseWeight * map(1 - i / segments, 0, 1, 1.6, crayonSz)
             saturationStart = saturation(col2) + 10
             saturationEnd = saturation(col2)
             saturationStart2 = saturation(sectionCol) + 10
@@ -407,7 +407,7 @@ function crayonLineSegment(x, y, x1, y1, wobbliness) {
         } else {
             pg.stroke(hue(col2), saturationVal, brightness(col2) + colVarDet + briIndex)
         }
-        pg.strokeWeight(weight + random(-width / 7500, width / 7500))
+        pg.strokeWeight(weight + random(-0.2, 0.2))
         pg.point(finalX + rndX, finalY + rndY)
     }
 }
@@ -469,26 +469,26 @@ function smallSprayLineSegment(x, y, x1, y1, wobbliness) {
     for (let i = 0; i < controlPoints.length; i++) {
         const pointX = controlPoints[i][0]
         const pointY = controlPoints[i][1]
-        const baseWeight = width / 1250
+        const baseWeight = 1.2
 
-        const rndX = random(-width / 1500, width / 1500)
-        const rndY = random(-width / 1500, width / 1500)
+        const rndX = random(-1, 1)
+        const rndY = random(-1, 1)
 
         if (taperswitch < 0.5) {
-            weight = baseWeight * map(1 - i / segments, 0, 1, width / 30000, width / 15000)
+            weight = baseWeight * map(1 - i / segments, 0, 1, 0.05, 0.1)
             saturationStart = saturation(texCol) + 10
             saturationEnd = saturation(texCol)
         } else {
-            weight = baseWeight * map(i / segments, 0, 1, width / 30000, width / 15000)
+            weight = baseWeight * map(i / segments, 0, 1, 0.05, 0.1)
             saturationStart = saturation(texCol) - 5
             saturationEnd = saturation(texCol) + 5
         }
         const saturationVal = map(i, 0, controlPoints.length, saturationStart, saturationEnd);
 
-        scribbles.strokeWeight(weight + random(- width / 3000, width / 3000))
+        scribbles.strokeWeight(weight + random(-0.5, 0.5))
         scribbles.stroke(hue(texCol), saturationVal, brightness(texCol))
         scribbles.point(pointX + rndX, pointY + rndY)
-        scribbles.strokeWeight(weight * 2 + random(-width / 7500, width / 7500))
+        scribbles.strokeWeight(weight * 2 + random(-0.2, 0.2))
         scribbles.point(pointX + rndX, pointY + rndY)
     }
 }
@@ -548,10 +548,10 @@ function orbLineSegments(x, y, x1, y1, wobbliness) {
     for (let i = 0; i < controlPoints.length; i++) {
         const pointX = controlPoints[i][0]
         const pointY = controlPoints[i][1]
-        const baseWeight = width / 1250
+        const baseWeight = 1.2
 
-        const rndX = random(-width / 1500, width / 1500)
-        const rndY = random(-width / 1500, width / 1500)
+        const rndX = random(-1, 1)
+        const rndY = random(-1, 1)
 
         const waveDirectionX = Math.cos(waveAngle)
         const waveDirectionY = Math.log(waveAngle)
@@ -570,11 +570,11 @@ function orbLineSegments(x, y, x1, y1, wobbliness) {
         const colz = colorzz[colorIndex]
 
         if (taperswitch < 0.5) {
-            weight = baseWeight * map(1 - i / segments, 0, 1, width / 500, crayonSz * 1.25)
+            weight = baseWeight * map(1 - i / segments, 0, 1, 3, crayonSz * 1.25)
             saturationStart = saturation(colz) + 10
             saturationEnd = saturation(colz)
         } else {
-            weight = baseWeight * map(i / segments, 0, 1, width / 500, crayonSz * 1.25)
+            weight = baseWeight * map(i / segments, 0, 1, 3, crayonSz * 1.25)
             saturationStart = saturation(colz) - 8
             saturationEnd = saturation(colz) + 8
         }
@@ -585,7 +585,7 @@ function orbLineSegments(x, y, x1, y1, wobbliness) {
         noiseDetail(noiseDet, noiseDetFallOff)
 
         pg.stroke(hue(colz), saturationVal, brightness(colz) + colVarDet)
-        pg.strokeWeight(weight + random(-width / 7500, width / 7500))
+        pg.strokeWeight(weight + random(-0.2, 0.2))
         pg.point(pointX + rndX, pointY + rndY)
     }
 }
@@ -645,7 +645,7 @@ function orbOutline(x, y, radius) {
             let xOutl = x + cos(currentorbDrawStart) * radius + random(-strkW, strkW)
             let yOutl = y + sin(currentorbDrawStart) * radius + random(-strkW, strkW)
             const weightVarFac = noise(xOutl * 0.01, yOutl * 0.01)
-            const weight = map(weightVarFac, 0, 1, height / 6000, height / 4000)
+            const weight = map(weightVarFac, 0, 1, 0.33, 0.5)
             xOutl = constrain(xOutl, 50, width - 50)
             yOutl = constrain(yOutl, 50, height - 50)
             pencilPigments(xOutl, yOutl, weight)
@@ -713,7 +713,7 @@ function limbic(x, y, size, strokeNum) {
             const y = lerp(y1, y2, i / length)
             const xNoi = noise(x * 0.01, y * 0.01) * noiVal
             const yNoi = noise(x * 0.01, y * 0.01) * noiVal
-            const weight = map(xNoi, 0, noiVal, width / 7500, width / 750)
+            const weight = map(xNoi, 0, noiVal, 0.2, 2)
             dot(x + xNoi, y + yNoi, weight)
 
         }
@@ -723,7 +723,7 @@ function limbic(x, y, size, strokeNum) {
             const y = lerp(y3, y4, i / length2)
             const xNoi = noise(x * 0.01, y * 0.01) * noiVal
             const yNoi = noise(x * 0.01, y * 0.01) * noiVal
-            const weight = map(xNoi, 0, noiVal, width / 7500, width / 750)
+            const weight = map(xNoi, 0, noiVal, 0.2, 2)
             dot(x + xNoi, y + yNoi, weight)
         }
     } else {
@@ -737,14 +737,14 @@ function limbic(x, y, size, strokeNum) {
             const x = lerp(x1, x2, i / length)
             const y = lerp(y1, y2, i / length)
 
-            pg.rect(x, y, width / 750)
+            pg.rect(x, y, 2)
         }
 
         for (let i = 0; i < length2; i += 10) {
             const x = lerp(x3, x4, i / length2)
             const y = lerp(y3, y4, i / length2)
 
-            pg.rect(x, y, width / 750)
+            pg.rect(x, y, 2)
         }
     }
 
@@ -752,17 +752,17 @@ function limbic(x, y, size, strokeNum) {
 
 function tex() {
     for (let y = 0; y < height + 40; y += random(8, 13)) {
-        const rndX = random(-width / 1500, width / 1500)
-        const rndY = random(-width / 1500, width / 1500)
+        const rndX = random(-1, 1)
+        const rndY = random(-1, 1)
 
-        texLines(-width / 75 + rndX, y - width / 75 + rndY, width + width / 10 + rndX, y - width / 75 + rndY)
+        texLines(-20 + rndX, y - 20 + rndY, width + width / 10 + rndX, y - 20 + rndY)
     }
 
     for (let x = 0; x < width + 40; x += random(8, 13)) {
-        const rndX = random(-height / 1500, height / 1500)
-        const rndY = random(-height / 1500, height / 1500)
+        const rndX = random(-1, 1)
+        const rndY = random(-1, 1)
 
-        texLines2(x - height / 75 + rndX, -height / 75 + rndY, x - height / 75 + rndX, height + height / 10 + rndY)
+        texLines2(x - 26.66 + rndX, -26.66 + rndY, x - 26.66 + rndX, height + height / 10 + rndY)
     }
 }
 

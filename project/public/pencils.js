@@ -2,13 +2,13 @@ function pencilPigments(x, y, r) {
     pg.noStroke()
     const sides = random(4, 6)
     const increment = PI / sides
-    const randomOffset = random(width / 1500, width / 750)
+    const randomOffset = random(1, 2)
 
     pg.beginShape()
     for (let a = 0; a < TWO_PI; a += increment) {
         const angle = a + randomOffset
-        const sx = x + Math.cos(angle) * r + random(width / 750, width / 375)
-        const sy = y + Math.sin(angle) * r + random(width / 750, width / 375)
+        const sx = x + Math.cos(angle) * r + random(2, 4)
+        const sy = y + Math.sin(angle) * r + random(2, 4)
         pg.vertex(sx, sy)
     }
 
@@ -20,13 +20,13 @@ function pencilPigmentsPolyOut(x, y, r) {
     polyOutTop.noStroke()
     const sides = random(4, 6)
     const increment = PI / sides
-    const randomOffset = random(width / 1500, width / 750)
+    const randomOffset = random(1, 2)
 
     polyOutTop.beginShape()
     for (let a = 0; a < TWO_PI; a += increment) {
         const angle = a + randomOffset
-        const sx = x + Math.cos(angle) * r + random(width / 750, width / 375)
-        const sy = y + Math.sin(angle) * r + random(width / 750, width / 375)
+        const sx = x + Math.cos(angle) * r + random(2, 4)
+        const sy = y + Math.sin(angle) * r + random(2, 4)
         polyOutTop.vertex(sx, sy)
     }
 
@@ -54,7 +54,7 @@ function pencilArc(x, y, x1, y1) {
         let pointY = arcCenterY + arcRadius * sin(angle * angleRndY)
 
         const weightVarFac = noise(pointX * 0.01, pointY * 0.01)
-        const weight = map(weightVarFac, 0, 1, height / 6000, height / 4000)
+        const weight = map(weightVarFac, 0, 1, 0.33, 0.5)
 
         pointX = constrain(pointX, margin, width - margin)
         pointY = constrain(pointY, margin, height - margin)
@@ -87,14 +87,14 @@ function typoPencilPigments(x, y, r) {
     
     const sides = random(4, 6)
     const increment = PI / sides
-    const randomOffset = random(width / 1500, width / 750)
+    const randomOffset = random(1, 2)
 
     printingCan.noStroke()
     printingCan.beginShape()
     for (let a = 0; a < TWO_PI; a += increment) {
         const angle = a + randomOffset
-        const sx = x + Math.cos(angle) * r + random(width / 750, width / 375)
-        const sy = y + Math.sin(angle) * r + random(width / 750, width / 375)
+        const sx = x + Math.cos(angle) * r + random(2, 4)
+        const sy = y + Math.sin(angle) * r + random(2, 4)
         printingCan.vertex(sx, sy)
     }
 
@@ -135,7 +135,7 @@ function typoPencil(x, y, x1, y1) {
             const pointY = startY + (endY - startY) * t
 
             const weightVarFac = noise(pointX * 0.01, pointY * 0.01)
-            const weight = map(weightVarFac, 0, 1, height / 3000, height / 1000)
+            const weight = map(weightVarFac, 0, 1, 0.66, 2)
 
             if (backCol === '#191818') {
                 printingCan.fill('#DED5CA')
@@ -254,13 +254,13 @@ function sprayPigments(x, y, r) {
         pg.fill(colSpray)
         const sides = random(4, 6)
         const increment = PI / sides
-        const randomOffset = random(width / 1500, width / 750)
+        const randomOffset = random(1, 2)
 
         pg.beginShape()
         for (let a = 0; a < TWO_PI; a += increment) {
             const angle = a + randomOffset
-            const sx = x + Math.cos(angle) * r + random(width / 750, width / 375)
-            const sy = y + Math.sin(angle) * r + random(width / 750, width / 375)
+            const sx = x + Math.cos(angle) * r + random(2, 4)
+            const sy = y + Math.sin(angle) * r + random(2, 4)
             pg.vertex(sx, sy)
         }
 
@@ -279,20 +279,20 @@ function sprayPigments(x, y, r) {
 
 function sprayWalk() {
     for (let i = 0; i < 20; i++) {
-        sprayPigments(walkX + random(-width / 150, width / 150), walkY + random(-width / 150, width / 150), random(height / 2000, height / 1000))
+        sprayPigments(walkX + random(-10, 10), walkY + random(-10, 10), random(1, 2))
 
         switch (random([0, 1, 2, 3])) {
             case 0:
-                walkX = walkX + random(width / 150, width / 30)
+                walkX = walkX + random(10, 50)
                 break
             case 1:
-                walkX = walkX - random(width / 150, width / 30)
+                walkX = walkX - random(10, 50)
                 break
             case 2:
-                walkY = walkY + random(width / 150, width / 30)
+                walkY = walkY + random(10, 50)
                 break
             case 3:
-                walkY = walkY - random(width / 150, width / 30)
+                walkY = walkY - random(10, 50)
                 break
         }
         walkX = constrain(walkX, 0, width);
@@ -305,7 +305,7 @@ function brushes() {
     const x = random(width)
     const y = random(height)
     const thickRnd = random(3, 15)
-    const lenRnd = random(width / 300, width / 50)
+    const lenRnd = random(5, 30)
     brushCol = random(colorpalette.colors)
 
     pg.push()
@@ -327,18 +327,18 @@ function brushes() {
             const yCoord = amp * sin(angle) + noiseY * random(10, 20)
 
 
-            const px = xCoord - width / 150
+            const px = xCoord - 10
             const py = amp * sin(angle)
             const cx = xCoord
             const cy = yCoord
-            const nx = xCoord + width / 37.5
+            const nx = xCoord + 40
             const ny = amp * sin(angle)
 
             for (let t = 0; t <= 1; t += 0.1) {
                 const xBezier = bezierPoint(px, cx, nx, nx, t)
                 const yBezier = bezierPoint(py, cy, cy, ny, t)
                 pg.fill(hue(brushCol), saturation(brushCol) + 20, brightness(brushCol))
-                pencilPigments(xBezier, yBezier, random(height / 6000, height / 4000))
+                pencilPigments(xBezier, yBezier, random(0.33, 0.5))
             }
 
             sum += length
