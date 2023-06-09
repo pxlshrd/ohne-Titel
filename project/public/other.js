@@ -350,7 +350,9 @@ function keyPressed() {
 }
 
 function touchStarted() {
-    touchCount++
+    if (window.matchMedia("only screen and (max-width: 760px)").matches) {
+        touchCount++;
+      }
   
     if (touches.length === 1) {
       saveTimeout = setTimeout(saveCan, 2000)
