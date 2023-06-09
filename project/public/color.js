@@ -1,5 +1,4 @@
 function getPalettes(palettename) {
-  palettename = $fx.getParam("palette")
 
   let palettes = [
     {
@@ -59,8 +58,8 @@ function getPalettes(palettename) {
     },  
     {
       'name': '12',
-      'colors': ["#484B2F", "#999468", "#A6A676", "#D6CE93", "#EFEBCE", "#D8A48F", "#CA958C", "#BB8588", "#BDB88A", "#D6B09F"],
-      'back': ['#EFEBCE', '#D6B09F', '#D6CE93']
+      'colors': ["#1E1E1E", "#574E5B", "#958B95", "#765D7F", "#806A86", "#A894AD", "#808988", "#5B6460", "#D0634F", "#C4BFC8"],
+      'back': ['#EFEBCE', '#C4BFC8', '#806A86']
     },
     {
       'name': '13',
@@ -157,28 +156,115 @@ function getPalettes(palettename) {
       'colors': ["#1C2926", "#194A77", "#5198A6", "#4F425C", "#746085", "#807992", "#C1797C", "#E76E43", "#E8AD45", "#ECD8BD"],
       'back': ['#ECD8BD', '#9C886D', '#807992']
     },
+    {
+      'name': '32',
+      'colors': ["#352E2D", "#45423D", "#3D340E", "#686031", "#AD5735", "#98774E", "#8F8D4A", "#8BA67B", "#B68B36", "#DBC3A9"],
+      'back': ['#DBC3A9', '#686031', '#8BA67B']
+    },
+    {
+      'name': '33',
+      'colors': ["#706F6D", "#869674", "#4E8678", "#5B9277", "#77A983", "#F9CC55", "#A3566F", "#C4687B", "#C37D82", "#FCE2BD"],
+      'back': ['#FCE2BD', '#869674', '#706F6D']
+    },
+    {
+      'name': '34',
+      'colors': ["#44474D", "#1B5466", "#387489", "#7DA3A7", "#F05249", "#FD7A87", "#B5A2A0", "#DFC398", "#C4B26C", "#FFE09D"],
+      'back': ['#FCE2BD', '#AC98A8', '#6A6452']
+    },
+    {
+      'name': '35',
+      'colors': ["#1B2121", "#42586F", "#4F69A7", "#8E8B9E", "#686B9E", "#54B4B1", "#328C85", "#D0744F", "#9197C4", "#B3C8D8"],
+      'back': ['#B3C8D8', '#8E8B9E', '#4F69A7']
+    },
+    {
+      'name': '36',
+      'colors': ["#262835", "#6C6C85", "#2A284F", "#393C69", "#7276B1", "#9FAAC7", "#A173C7", "#D18A64", "#D4BEB6", "#D0E2E4"],
+      'back': ['#D0E2E4', '#9FAAC7', '#6C6C85']
+    },
+    {
+      'name': '37',
+      'colors': ["#2F360F", "#825134", "#6656A3", "#4B5E77", "#627E81", "#0B7E6C", "#EE7792", "#FD7D77", "#EE9624", "#D2A3B5"],
+      'back': ['#F2EDDA', '#627E81', '#D2A3B5']
+    },
+    {
+      'name': '38',
+      'colors': ["#192D23", "#375245", "#693D3C", "#64401D", "#B07626", "#D07723", "#B9934C", "#D399CD", "#CCACA1", "#CEB694"],
+      'back': ['#CEB694', '#B9934C', '#D07723']
+    },
+    {
+      'name': '39',
+      'colors': ["#466D4E", "#616649", "#4C7652", "#562626", "#7C2F35", "#C2524F", "#EA5F28", "#F56C34", "#7994E6", "#8EAAF3"],
+      'back': ['#F0F0E8', '#616649', '#8EAAF3']
+    },
+    {
+      'name': '40',
+      'colors': ["#262E45", "#2D4250", "#797329", "#4B67C3", "#717DB8", "#B186BF", "#D4898E", "#EB8D9A", "#D88334", "#C8BFC2"],
+      'back': ['#C8BFC2', '#D4898E', '#ACA3D0']
+    },
   ]
-
-  let selectedPalette = palettes.find(palette => palette.name === palettename)
-  return selectedPalette
+  
+  return random(palettes)
 }
 
 function getColors() {
   colorpalette = getPalettes()
+  backColChooser = random()
 
-  if ($fx.getParam("background") == "light") {
+  if (backColChooser < 0.3) {
     backCol = colorpalette.back[0]
-  } else if ($fx.getParam("background") == "color 1") {
+  } else if (backColChooser < 0.6) {
     backCol = colorpalette.back[1]
-  } else if ($fx.getParam("background") == "color 2") {
+  } else if (backColChooser < 0.9) {
     backCol = colorpalette.back[2]
-  } else if ($fx.getParam("background") == "dark") {
+  } else if (backColChooser < 1) {
+    backCol = '#191818'
+  }
+
+  let colorDistribution = [
+    {
+        name: "mono", 
+        probability: 5,
+    },
+    {
+        name: "reduced 1", 
+        probability: 25,
+    },
+    {
+        name: "reduced 2", 
+        probability: 15,
+    },
+    {
+        name: "full palette", 
+        probability: 20,
+    },
+    {
+        name: "micro", 
+        probability: 5,
+    },
+    {
+        name: "section", 
+        probability: 25,
+    },
+    {
+        name: "wave", 
+        probability: 5,
+    }
+  ]
+  colDist = {}
+  colDistChooser(colorDistribution)
+
+  if ($fx.getParam("background") === "light") {
+    backCol = colorpalette.back[0]
+  } else if ($fx.getParam("background") === "color 1") {
+    backCol = colorpalette.back[1]
+  } else if ($fx.getParam("background") === "color 2") {
+    backCol = colorpalette.back[2]
+  } else if ($fx.getParam("background") === "dark") {
     backCol = '#191818'
   } else if (dPressed == true) {
     backCol = '#191818'
   }
 
-  
   colorzz = colorpalette.colors.filter(color => color !== backCol)
   col3 = random(colorpalette.colors.filter(color => color !== backCol))
   col4 = random(colorpalette.colors.filter(color => color !== backCol))
@@ -186,15 +272,15 @@ function getColors() {
   sectionCol = random(colorpalette.colors.filter(color => color !== backCol))
   shuffle(colorzz, true)
 
-  if ($fx.getParam("colDist") == 'mono') {
+  if (colDist.mono) {
     colorCount = 0
-  } else if ($fx.getParam("colDist") == 'reduced 1') {
+  } else if (colDist["reduced 1"]) {
     colorCount = 45
-  } else if ($fx.getParam("colDist") == 'reduced 2') {
+  } else if (colDist["reduced 2"]) {
     colorCount = 90
-  } else if ($fx.getParam("colDist") == 'full palette') {
+  } else if (colDist["full palette"]) {
     colorCount = 180
-  } else if ($fx.getParam("colDist") == 'section') {
+  } else if (colDist.section) {
     colorCount = random([0, 45, 90, 180])
   }
 }

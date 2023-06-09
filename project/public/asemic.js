@@ -38,16 +38,18 @@ function drawAsemic() {
 }
 
 function drawWord(x, y, length) {
-    pg.beginShape()
+    
     pg.strokeWeight(width / 1500)
     if ($fx.getParam("background") == "dark") {
-        pg.stroke(80, 0.15)
-    } else if (backCol === '#4C4C70' || backCol === '#4B3663' || backCol === '#4F4F4F' || backCol === '#425E44' || backCol === '#494A3F' || backCol === '#72685D') {
-        pg.stroke(15, 0.5)
+        pg.stroke(80, 0.15);
+    } else if (["#4C4C70", "#4B3663", "#4F4F4F", "#425E44", "#494A3F", "#72685D", '#686031', '#6A6452', '#616649'].includes(backCol)) {
+        pg.stroke(15, 0.5);
     } else {
-        pg.stroke(20, 0.2)
+        pg.stroke(20, 0.2);
     }
     pg.noFill()
+    
+    pg.beginShape()
     for (let i = 0; i < length; i++) {
         let xPos = x + i * gridSize + random(-asemicJitter * 2, asemicJitter * 2)
         let yPos = y + random(-asemicJitter, asemicJitter)

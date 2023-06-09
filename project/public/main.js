@@ -1,22 +1,26 @@
+let title = 'time leaves dust'
 let fPressed = false
 let dPressed = false
-let title = 'time leaves dust'
 let saveTimeout
 let saving = false
+let closeLastRhombus = false
+let isFirstIteration = true
 
 let startTime
 let timeDisplay
 
 function setup() {
-	let pxlDens = 1
-	let w = 1500
-	let h = 2000
+	const pxlDens = 1
+	const w = 1500
+	const h = 2000
 	pxldrw(pxlDens, w, h)
 }
 
 function pxldrw(pxlDens, w, h) {
 	fxrandminter = sfc32(...hashes)
-	let seed = fxrandminter() * $fx.getParam("iteration")
+	const seed = fxrandminter() * $fx.getParam("seeds")
+	randomSeed(seed)
+	noiseSeed(seed)
 	counter = 0
 	stopCounter = false
 
@@ -25,9 +29,8 @@ function pxldrw(pxlDens, w, h) {
 	pg = createGraphics(w, h)
 	scribbles = createGraphics(w, h)
 	printingCan = createGraphics(w, h)
+	polyOutTop = createGraphics(w, h)
 
-	randomSeed(seed)
-	noiseSeed(seed)
 	noiseDet = int(random(2, 5))
 	noiseDetFallOff = 0.5
 	noiseDetTexture = 6
@@ -39,23 +42,23 @@ function pxldrw(pxlDens, w, h) {
 	scribbles.pixelDensity(pxlDens)
 	overl.pixelDensity(pxlDens)
 	printingCan.pixelDensity(pxlDens)
+	polyOutTop.pixelDensity(pxlDens)
 
 	colorMode(HSB)
 	overl.colorMode(HSB)
 	pg.colorMode(HSB)
 	scribbles.colorMode(HSB)
 	printingCan.colorMode(HSB)
+	polyOutTop.colorMode(HSB)
 
 	strokeCap(ROUND)
 	frameRate(120)
 
 	getColors()
 
-	initglobalVariables()
+	initVars()
 
 	background(hue(backCol), saturation(backCol), brightness(backCol))
-
-	polygon = []
 
 	sdfFoundation()
 
@@ -76,15 +79,14 @@ function draw() {
 		printing(printX, printY, printsz)
 	}
 
-	if (counter < 30 && dPressed == false) {
+	if (counter < 30 && !dPressed) {
 		pencilArcDraw()
 	}
 
-	if (counter > 20 && !stopCounter && dPressed == false) {
-		if (counter % 12 == 0) {
-			brushes()
-		}
+	if (counter > 20 && !stopCounter && !dPressed && counter % 12 === 0) {
+		brushes()
 	}
+
 
 	if (!stopCounter) {
 		background(hue(backCol), saturation(backCol), brightness(backCol))
@@ -103,17 +105,23 @@ function draw() {
 
 	if (y > height - (width / 30)) {
 		stopCounter = true
+		noLoop()
 		// drawAsemicEraser()
-		if (dPressed == false) {
+		if (!dPressed) {
 			for (i = 0; i < 50; i++) {
 				texX = random(width)
 				texY = random(height)
 				smallSprayLine(texX, texY, texX + random(-width / 3, width / 3), texY + random(-width / 3, width / 3), random(1, 10))
 			}
 			image(scribbles, 0, 0, width, height)
+
+			drawPolyOutlinesTop()
+			image(polyOutTop, 0, 0)
+
+
 		}
 
-		if (pixelDensity() <= 3 && dPressed == false) {
+		if (pixelDensity() <= 3 && !dPressed) {
 			tex()
 			push()
 			blendMode(BLEND)
@@ -121,18 +129,17 @@ function draw() {
 			image(overl, 0, 0, width, height)
 			pop()
 			grain(10)
-		} else if (dPressed = true) {
+		} else if (!dPressed) {
 			tex()
 		}
 
-		noLoop()
 		fxpreview()
 
 		if (pixelDensity() <= 3 && pixelDensity() > 1) {
-			saveCanvas(title + "_" + $fx.getParam("iteration") + ".jpg")
+			saveCanvas(title + "_" + $fx.getParam("seeds") + ".jpg")
 		} else if (pixelDensity() > 3) {
-			saveCanvas(title + "_" + $fx.getParam("iteration") + ".png")
-			saveCanvas(title + "_" + $fx.getParam("iteration") + ".jpg")
+			saveCanvas(title + "_" + $fx.getParam("seeds") + ".png")
+			saveCanvas(title + "_" + $fx.getParam("seeds") + ".jpg")
 		}
 	}
 
@@ -142,20 +149,15 @@ function draw() {
 	counter++
 }
 
-function initglobalVariables() {
+function initVars() {
+	polygon = []
 	gridSize = 8
 	cnt = height - width / 30
 	orbDrawStart = random(0, 10)
-	if (random() < 0.05) {
-		wobble = 200
-	} else {
-		wobble = random([30, 40, 50, 100])
-	}
-	if (random() < 0.8) {
-		limit = 0
-	} else {
-		limit = 2
-	}
+	wobble = random() < 0.05 ? 200 : random([30, 40, 50, 100])
+	insanity = random() < 0.05 ? 1000 : 50
+	limit = random() < 0.8 ? 0 : 2
+
 	lengthOutside = random(width / 8, width / 5)
 
 	minDist = Infinity
@@ -174,6 +176,7 @@ function initglobalVariables() {
 	repInfl = weightedRnd(repellorInfluence)
 
 	brushDir = random()
+
 	crayonSize = [
 		[width / 375, 10],
 		[width / 250, 20],
@@ -186,6 +189,10 @@ function initglobalVariables() {
 	dotWaveAmp = random(10, 50)
 	dotWaveThick = random(50, 250)
 	dotWaveStretch = random([HALF_PI, TWO_PI])
+
+	dotWaveFreq2 = random(0.005, 0.01)
+	dotWaveAmp2 = random(10, 30)
+	dotWaveThick2 = random(100, 250)
 
 	vari1 = random(0, 4)
 	vari2 = random(0, 4)
@@ -225,7 +232,7 @@ function drawComposition() {
 		}
 
 		if (!insidePolygon && !insideBigCircle && random() < 0.7) {
-			if (dPressed == false) {
+			if (!dPressed) {
 				dotHalftone(x, y, random(width / 750, width / 500))
 			} else {
 				pg.push()
@@ -238,7 +245,7 @@ function drawComposition() {
 
 
 		if (insideBigCircle) {
-			if (dPressed == false) {
+			if (!dPressed) {
 				drawOrb(x, y, wobble)
 				orbOutline(bigCircle.center.x, bigCircle.center.y, bigCircle.radius)
 			} else {
@@ -249,13 +256,13 @@ function drawComposition() {
 
 		if (!insideBigCircle) {
 
-			if (dPressed == false) {
+			if (!dPressed) {
 				if (random() < 0.3) {
-					let closestPoint = closestPointOnPolygon(x, y, nearestPolygon)
-					let lineLength = dist(x, y, closestPoint.x, closestPoint.y)
-					let smoothEdging = random(-width / 50, width / 50)
+					const closestPoint = closestPointOnPolygon(x, y, nearestPolygon)
+					const lineLength = dist(x, y, closestPoint.x, closestPoint.y)
+					const smoothEdging = random(-width / 50, width / 50)
 					if (lineLength > lengthOutside + smoothEdging) {
-						if (counter % limit == true) {
+						if (counter % limit) {
 							crayonLine(x, y, closestPoint.x, closestPoint.y, wobble)
 						}
 					} else {
@@ -263,10 +270,10 @@ function drawComposition() {
 					}
 				}
 			} else {
-				let closestPoint = closestPointOnPolygon(x, y, nearestPolygon)
-				let lineLength = dist(x, y, closestPoint.x, closestPoint.y)
+				const closestPoint = closestPointOnPolygon(x, y, nearestPolygon)
+				const lineLength = dist(x, y, closestPoint.x, closestPoint.y)
 				if (lineLength > width / 5) {
-					if (counter % limit == true) {
+					if (counter % limit) {
 						digitalLine(x, y, closestPoint.x, closestPoint.y, wobble)
 					}
 				} else {
@@ -278,7 +285,17 @@ function drawComposition() {
 }
 
 function sdfFoundation() {
-	compositionChoice = $fx.getParam("comp")//random()
+	compositionChoice = random()
+	rectHor = false
+	rectVert = false
+	rectCollision = false
+	rndRectGrid = false
+	concentric = false
+	rhombuses = false
+	polyGrid = false
+	poly3 = false
+	polyChaos = false
+
 
 	// duplicateAvoidX = map(Math.random(), 0, 1, -50, 50)
 	// duplicateAvoidY = map(Math.random(), 0, 1, -50, 50)
@@ -294,7 +311,8 @@ function sdfFoundation() {
 		}
 	}
 
-	if (compositionChoice == "rect hor") {
+	if (compositionChoice < 0.05) {
+		rectHor = true
 		//rect grid horizontal
 		const numRectangles = int(random(3, 16))
 		const margin = width / 15
@@ -313,7 +331,8 @@ function sdfFoundation() {
 			polygon.push(createVector(rectX2, rectY + rectHeight + random(-rndShift, rndShift)))
 			polygon.push(createVector(rectX1, rectY + rectHeight + random(-rndShift, rndShift)))
 		}
-	} else if (compositionChoice == "rect vert") {
+	} else if (compositionChoice < 0.1) {
+		rectVert = true
 		//rect grid vertical
 		const numRectangles = int(random(3, 16))
 		const margin = height / 15
@@ -333,7 +352,8 @@ function sdfFoundation() {
 			polygon.push(createVector(rectX + rectWidth + random(-rndShift, rndShift), rectY1))
 		}
 
-	} else if (compositionChoice == "rect collision") {
+	} else if (compositionChoice < 0.15) {
+		rectCollision = true
 		//rect grid collision
 		for (let i = 0; i < 10; i++) {
 			let x, y, w, h, pos, vectors
@@ -357,14 +377,15 @@ function sdfFoundation() {
 			polygon.push(createVector(bottomRight.x, bottomRight.y))
 			polygon.push(createVector(bottomLeft.x, bottomLeft.y))
 		}
-	} else if (compositionChoice == "randomized rectangle grid") {
+	} else if (compositionChoice < 0.25) {
+		rndRectGrid = true
 		//randomized rectangle grid
-		let x = 150
-		let y = 150
-		let w = width - 50
-		let h = height - 50
-		let numCols = random([5, 6, 7])
-		let numRows = random([5, 6, 7])
+		const x = 150
+		const y = 150
+		const w = width - 50
+		const h = height - 50
+		const numCols = random([5, 6, 7])
+		const numRows = random([5, 6, 7])
 		const colWidth = (w - x) / numCols
 		const rowHeight = (h - y) / numRows
 
@@ -381,7 +402,8 @@ function sdfFoundation() {
 				polygon.push(createVector(rx, ry + rh))
 			}
 		}
-	} else if (compositionChoice == "concentric poly") {
+	} else if (compositionChoice < 0.45) {
+		concentric = true
 		//concentric poly
 		const numCircles = int(random(5, 10))
 		const circleSpacing = random(height / 10, height / 7)
@@ -423,29 +445,54 @@ function sdfFoundation() {
 			}
 		}
 
-	} else if (compositionChoice == "rhombuses") {
-		const numRhombusesRow = int(random(2, 10))
-		const numRhombusesColumn = int(random(2, 10))
-		const margin = 50
-		const rhombusWidth = (width - 2 * margin) / numRhombusesRow
-		const rhombusHeight = (height - 2 * margin) / numRhombusesColumn
+	} else if (compositionChoice < 0.55) {
+		rhombuses = true
+		//rhombuses
+		const numRhombusesRow = int(random(2, 10));
+		const numRhombusesColumn = int(random(2, 10));
+		const margin = 50;
+		const rhombusWidth = (width - 2 * margin) / numRhombusesRow;
+		const rhombusHeight = (height - 2 * margin) / numRhombusesColumn;
 
 		for (let i = 0; i < numRhombusesColumn; i++) {
 			for (let j = 0; j < numRhombusesRow; j++) {
-				const rhombusX = margin + j * rhombusWidth
-				const rhombusY = margin + i * rhombusHeight
-				const rndShift = width / 75
+				const rhombusX = margin + j * rhombusWidth;
+				const rhombusY = margin + i * rhombusHeight;
+				const centerX = rhombusX + rhombusWidth / 2;
+				const centerY = rhombusY + rhombusHeight / 2;
 
-				const centerX = rhombusX + rhombusWidth / 2
-				const centerY = rhombusY + rhombusHeight / 2
+				if (isFirstIteration && i === 0 && j === 0) {
+					// Create the first rhombus
+					polygon.push(createVector(centerX - rhombusWidth / 2, centerY));
+					polygon.push(createVector(centerX, centerY + rhombusHeight / 2));
+					polygon.push(createVector(centerX + rhombusWidth / 2, centerY));
+					polygon.push(createVector(centerX, centerY - rhombusHeight / 2));
+				}
 
-				polygon.push(createVector(centerX - rhombusWidth / 2 + random(-rndShift, rndShift), centerY + random(-rndShift, rndShift)))
-				polygon.push(createVector(centerX + random(-rndShift, rndShift), centerY + rhombusHeight / 2 + random(-rndShift, rndShift)))
-				polygon.push(createVector(centerX + rhombusWidth / 2 + random(-rndShift, rndShift), centerY + random(-rndShift, rndShift)))
-				polygon.push(createVector(centerX + random(-rndShift, rndShift), centerY - rhombusHeight / 2 + random(-rndShift, rndShift)))
+				polygon.push(createVector(centerX - rhombusWidth / 2, centerY));
+				polygon.push(createVector(centerX, centerY + rhombusHeight / 2));
+				polygon.push(createVector(centerX + rhombusWidth / 2, centerY));
+				polygon.push(createVector(centerX, centerY - rhombusHeight / 2));
+				if (i === numRhombusesColumn - 1 && j === numRhombusesRow - 1) {
+					closeLastRhombus = true;
+				}
 			}
+			if (closeLastRhombus) {
+				const rhombusX = margin + (numRhombusesRow - 1) * rhombusWidth;
+				const rhombusY = margin + (numRhombusesColumn - 1) * rhombusHeight;
+				const centerX = rhombusX + rhombusWidth / 2;
+				const centerY = rhombusY + rhombusHeight / 2;
+
+				polygon.push(createVector(centerX - rhombusWidth / 2, centerY));
+				polygon.push(createVector(centerX, centerY + rhombusHeight / 2));
+				polygon.push(createVector(centerX + rhombusWidth / 2, centerY));
+				polygon.push(createVector(centerX, centerY - rhombusHeight / 2));
+			}
+
 		}
-	} else if (compositionChoice == "polygrid") {
+
+	} else if (compositionChoice < 0.80) {
+		polyGrid = true
 		//poly grid
 		const polyGridSize = random([2, 3])
 		const margin = width / 30
@@ -472,14 +519,15 @@ function sdfFoundation() {
 				}
 			}
 		}
-	} else if (compositionChoice == "poly 3") {
+	} else if (compositionChoice < 0.9) {
+		poly3 = true
 		//polys chaos 1
 		const polyChaosSides = int(random(8, 25))
 		const polyChaosRad = height / 4
 		const margin = width / 30
 
 		for (let i = 0; i < polyChaosSides; i++) {
-			let angle = map(i, 0, polyChaosSides, 0, TWO_PI)
+			const angle = map(i, 0, polyChaosSides, 0, TWO_PI)
 			let x = random(width - margin) + cos(angle) * polyChaosRad
 			let y = random(height - margin) + sin(angle) * polyChaosRad / 2
 
@@ -488,7 +536,8 @@ function sdfFoundation() {
 
 			polygon.push(createVector(x, y))
 		}
-	} else if (compositionChoice == "poly chaos") {
+	} else if (compositionChoice < 1) {
+		polyChaos = true
 		//polys chaos 2
 		for (let i = 0; i < 3; i++) {
 			const polyNormalSides = int(random(8, 25))
@@ -498,7 +547,7 @@ function sdfFoundation() {
 			const polyNormalRad = height / 5
 
 			for (let i = 0; i < polyNormalSides; i++) {
-				let angle = map(i, 0, polyNormalSides, 0, TWO_PI)
+				const angle = map(i, 0, polyNormalSides, 0, TWO_PI)
 				let x = polyNormalX + cos(angle) * polyNormalRad
 				let y = polyNormalY + sin(angle) * polyNormalRad / random([0.5, 1, 2])
 

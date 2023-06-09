@@ -1,10 +1,10 @@
 function pencilPigments(x, y, r) {
     pg.noStroke()
-    pg.beginShape()
     const sides = random(4, 6)
     const increment = PI / sides
     const randomOffset = random(width / 1500, width / 750)
 
+    pg.beginShape()
     for (let a = 0; a < TWO_PI; a += increment) {
         const angle = a + randomOffset
         const sx = x + Math.cos(angle) * r + random(width / 750, width / 375)
@@ -13,6 +13,24 @@ function pencilPigments(x, y, r) {
     }
 
     pg.endShape(CLOSE)
+
+}
+
+function pencilPigmentsPolyOut(x, y, r) {
+    polyOutTop.noStroke()
+    const sides = random(4, 6)
+    const increment = PI / sides
+    const randomOffset = random(width / 1500, width / 750)
+
+    polyOutTop.beginShape()
+    for (let a = 0; a < TWO_PI; a += increment) {
+        const angle = a + randomOffset
+        const sx = x + Math.cos(angle) * r + random(width / 750, width / 375)
+        const sy = y + Math.sin(angle) * r + random(width / 750, width / 375)
+        polyOutTop.vertex(sx, sy)
+    }
+
+    polyOutTop.endShape(CLOSE)
 
 }
 
@@ -66,12 +84,13 @@ function pencilArcDraw() {
 //loading typo
 function typoPencilPigments(x, y, r) {
 
-    printingCan.beginShape()
+    
     const sides = random(4, 6)
     const increment = PI / sides
     const randomOffset = random(width / 1500, width / 750)
 
     printingCan.noStroke()
+    printingCan.beginShape()
     for (let a = 0; a < TWO_PI; a += increment) {
         const angle = a + randomOffset
         const sx = x + Math.cos(angle) * r + random(width / 750, width / 375)
@@ -95,12 +114,10 @@ function typoPencil(x, y, x1, y1) {
         const xEnd = x + ((x1 - x) * i) / segments
         const yEnd = y + ((y1 - y) * i) / segments
         const noiseFactor = noise(xEnd * 0.002, yEnd * 0.002)
-        const xOffset =
-            map(noiseFactor, 0, 1, -wobbliness, wobbliness) *
-            Math.sin(noiseFactor * TWO_PI * 2)
-        const yOffset =
-            map(noiseFactor, 0, 1, -wobbliness, wobbliness) *
-            Math.cos(noiseFactor * TWO_PI * 2)
+        const multX = Math.sin(noiseFactor * TWO_PI * 2)
+        const multY = Math.cos(noiseFactor * TWO_PI * 2)
+        const xOffset = map(noiseFactor, 0, 1, -wobbliness, wobbliness) * multX
+        const yOffset = map(noiseFactor, 0, 1, -wobbliness, wobbliness) * multY
 
         controlPoints.push([xEnd + xOffset, yEnd + yOffset])
     }
@@ -138,7 +155,7 @@ function printing(x, y, size) {
     const centerX = x - size / 2
     const centerY = y
 
-    if (dPressed == false) {
+    if (!dPressed) {
 
         // P
         typoPencil(centerX - size * 3.2, centerY - size * 0.8, centerX - size * 3.2, centerY + size * 0.8)
@@ -232,15 +249,14 @@ function printing(x, y, size) {
 //spray
 function sprayPigments(x, y, r) {
     colSpray = random(colorpalette.colors)
-    if (dPressed == false) {
+    if (!dPressed) {
         pg.noStroke()
         pg.fill(colSpray)
-        pg.beginShape()
         const sides = random(4, 6)
         const increment = PI / sides
         const randomOffset = random(width / 1500, width / 750)
 
-
+        pg.beginShape()
         for (let a = 0; a < TWO_PI; a += increment) {
             const angle = a + randomOffset
             const sx = x + Math.cos(angle) * r + random(width / 750, width / 375)
@@ -286,41 +302,41 @@ function sprayWalk() {
 
 //brushes
 function brushes() {
-    let x = random(width)
-    let y = random(height)
-    let thickRnd = random(3, 15)
-    let lenRnd = random(width / 300, width / 50)
+    const x = random(width)
+    const y = random(height)
+    const thickRnd = random(3, 15)
+    const lenRnd = random(width / 300, width / 50)
     brushCol = random(colorpalette.colors)
 
     pg.push()
     pg.translate(x, y)
     pg.rotate(random(0, TWO_PI))
 
-    let numPoints = int(random(10, 30))
+    const numPoints = int(random(10, 30))
 
     for (let j = 0; j < numPoints; j++) {
-        let amp = random(0, thickRnd)
-        let angle = random(0, TWO_PI)
-        let length = random(1, lenRnd)
+        const amp = random(0, thickRnd)
+        const angle = random(0, TWO_PI)
+        const length = random(1, lenRnd)
 
-        let sum = 1;
+        let sum = 1
         for (let k = 0; k < length; k += 2) {
-            let noiseX = noise(j * 0.1, k * 0.1)
-            let noiseY = noise(j * 0.1, k * 0.1)
-            let xCoord = sum + k + noiseX * random(10, 20)
-            let yCoord = amp * sin(angle) + noiseY * random(10, 20)
+            const noiseX = noise(j * 0.1, k * 0.1)
+            const noiseY = noise(j * 0.1, k * 0.1)
+            const xCoord = sum + k + noiseX * random(10, 20)
+            const yCoord = amp * sin(angle) + noiseY * random(10, 20)
 
 
-            let px = xCoord - width / 150
-            let py = amp * sin(angle)
-            let cx = xCoord
-            let cy = yCoord
-            let nx = xCoord + width / 37.5
-            let ny = amp * sin(angle)
+            const px = xCoord - width / 150
+            const py = amp * sin(angle)
+            const cx = xCoord
+            const cy = yCoord
+            const nx = xCoord + width / 37.5
+            const ny = amp * sin(angle)
 
             for (let t = 0; t <= 1; t += 0.1) {
-                let xBezier = bezierPoint(px, cx, nx, nx, t)
-                let yBezier = bezierPoint(py, cy, cy, ny, t)
+                const xBezier = bezierPoint(px, cx, nx, nx, t)
+                const yBezier = bezierPoint(py, cy, cy, ny, t)
                 pg.fill(hue(brushCol), saturation(brushCol) + 20, brightness(brushCol))
                 pencilPigments(xBezier, yBezier, random(height / 6000, height / 4000))
             }
