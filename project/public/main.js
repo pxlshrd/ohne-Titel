@@ -290,6 +290,7 @@ function sdfFoundation() {
 	rectVert = false
 	rectCollision = false
 	rndRectGrid = false
+	spiral = false
 	concentric = false
 	rhombuses = false
 	polyGrid = false
@@ -401,6 +402,19 @@ function sdfFoundation() {
 				polygon.push(createVector(rx + rw, ry + rh))
 				polygon.push(createVector(rx, ry + rh))
 			}
+		}
+	} else if (compositionChoice < 0.3) {
+		spiral = true
+		let numElements = 100
+		let spiralRadiusIncrement = random(8, 15)
+		let angleIncrement = random(0.1, 1)
+		
+		for (let i = 0; i < numElements; i++) {
+			let angle = angleIncrement * i
+			let radius = spiralRadiusIncrement * i
+			let x = width / 2 + radius * Math.cos(angle)
+			let y = height / 2 + radius * Math.sin(angle)
+			polygon.push(createVector(x, y))
 		}
 	} else if (compositionChoice < 0.45) {
 		concentric = true

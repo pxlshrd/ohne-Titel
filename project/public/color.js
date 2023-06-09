@@ -201,6 +201,21 @@ function getPalettes(palettename) {
       'colors': ["#262E45", "#2D4250", "#797329", "#4B67C3", "#717DB8", "#B186BF", "#D4898E", "#EB8D9A", "#D88334", "#C8BFC2"],
       'back': ['#C8BFC2', '#D4898E', '#ACA3D0']
     },
+    {
+      'name': '41',
+      'colors': ["#1B2121", "#5C6974", "#7CA5AC", "#85CDCA", "#D5F2B6", "#CAE2F4", "#5880AF", "#FDCC56", "#FCCAE5", "#FAF7EB"],
+      'back': ['#FAF7EB', '#CAE2F4', '#7CA5AC']
+    },
+    {
+      'name': '42',
+      'colors': ["#384238", "#465449", "#615D4D", "#9DB391", "#C0B971", "#86B8A5", "#ED8464", "#F7B0AE", "#E2B882", "#EDDDB9"],
+      'back': ['#EDDDB9', '#C0B971', '#9DB391']
+    },
+    {
+      'name': '43',
+      'colors': ["#333B35", "#325252", "#727875", "#B08590", "#DA757E", "#FE7C4F", "#F55248", "#5A77F2", "#219CA3", "#CBBC9F"],
+      'back': ['#CBBC9F', '#B08590', '#727875']
+    },
   ]
   
   return random(palettes)
@@ -252,18 +267,6 @@ function getColors() {
   ]
   colDist = {}
   colDistChooser(colorDistribution)
-
-  if ($fx.getParam("background") === "light") {
-    backCol = colorpalette.back[0]
-  } else if ($fx.getParam("background") === "color 1") {
-    backCol = colorpalette.back[1]
-  } else if ($fx.getParam("background") === "color 2") {
-    backCol = colorpalette.back[2]
-  } else if ($fx.getParam("background") === "dark") {
-    backCol = '#191818'
-  } else if (dPressed == true) {
-    backCol = '#191818'
-  }
 
   colorzz = colorpalette.colors.filter(color => color !== backCol)
   col3 = random(colorpalette.colors.filter(color => color !== backCol))

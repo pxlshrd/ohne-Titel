@@ -210,7 +210,7 @@ function polyCrayonLineTopSegment(x, y, x1, y1) {
         // Apply force with distance-based attenuation
         const finalX = pointX + repellorForce * (pointX - repellorX) * repellorDistanceNormalized// + attractorForce * (attractorX - pointX) * attractorDistanceNormalized
         const finalY = pointY + repellorForce * (pointY - repellorY) * repellorDistanceNormalized// + attractorForce * (attractorY - pointY) * attractorDistanceNormalized
-        if ($fx.getParam("background") == "dark") {
+        if (backCol === '#191818') {
             polyOutTop.fill('#DED5CA')
         } else {
             polyOutTop.fill(20, 10, 20)
@@ -234,6 +234,7 @@ function polyCrayonLineTop(x, y, x1, y1, wobbliness) {
         const multY = Math.cos(noiseFactor * TWO_PI * 2)
         const xOffset = map(noiseFactor, 0, 1, -wobbliness, wobbliness) * multX
         const yOffset = map(noiseFactor, 0, 1, -wobbliness, wobbliness) * multY
+        pencilAngle = map(noiseFactor, 0, 1, -3, 3) * multY
 
         controlPoints.push([xEnd + xOffset, yEnd + yOffset])
     }
@@ -243,7 +244,7 @@ function polyCrayonLineTop(x, y, x1, y1, wobbliness) {
         startY = controlPoints[i][1]
         endX = controlPoints[i + 1][0]
         endY = controlPoints[i + 1][1]
-        rndspread = 1
+        rndspread = pencilAngle
 
         push()
         polyCrayonLineTopSegment(
@@ -630,7 +631,7 @@ function orbOutline(x, y, radius) {
     const orbDrawStartStep = TWO_PI / density
     const strkW = random(1, 3)
 
-    if ($fx.getParam("background") === "dark") {
+    if (backCol === '#191818') {
         pg.fill('#DED5CA')
     } else {
         pg.fill(20, 10, 20)
