@@ -751,14 +751,14 @@ function limbic(x, y, size, strokeNum) {
 }
 
 function tex() {
-    for (let y = 0; y < height + 40; y += random(8, 13)) {
+    for (let y = 0; y < height + 40; y += random(8, 10)) {
         const rndX = random(-1, 1)
         const rndY = random(-1, 1)
 
-        texLines(-20 + rndX, y - 20 + rndY, width + width / 10 + rndX, y - 20 + rndY)
+        texLines(-20 + rndX, y - 20 + rndY, width + width /8 + rndX, y - 20 + rndY)
     }
 
-    for (let x = 0; x < width + 40; x += random(8, 13)) {
+    for (let x = 0; x < width + 40; x += random(6, 10)) {
         const rndX = random(-1, 1)
         const rndY = random(-1, 1)
 
@@ -770,7 +770,49 @@ function texLines(x, y, x1, y1) {
     overl.push()
     const controlPoints = []
     const d = dist(x, y, x1, y1)
-    const segments = d * 0.05
+    const segments = d * 0.01
+
+    for (let i = 0; i <= segments; i++) {
+        const xEnd = x + (x1 - x) * i / segments
+        const yEnd = y + (y1 - y) * i / segments
+        const noiseFactor = noise(xEnd * 0.002, yEnd * 0.002)
+        const noiseFactorOpac = noise(xEnd * 0.5, yEnd * 0.5)
+        const xOffset = map(noiseFactor, 0, 1, -30, 30)
+        const yOffset = map(noiseFactor, 0, 1, -30, 30)
+        opacNoiseShadows = map(noiseFactorOpac, 0, 1, 0, 10)
+        opacNoiseLights = map(noiseFactorOpac, 0, 1, 80, 100)
+        opacNoiseGlobal = map(noiseFactorOpac, 0, 1, 0.02, 0.04)
+
+        controlPoints.push([xEnd + xOffset, yEnd + yOffset])
+    }
+
+    for (let i = 0; i < controlPoints.length - 1; i++) {
+        overl.noFill()
+        const startX = controlPoints[i][0]
+        const startY = controlPoints[i][1]
+        const endX = controlPoints[i + 1][0]
+        const endY = controlPoints[i + 1][1]
+        strk = random(0.5, 4)
+
+        //shadows
+        overl.stroke(0, 0, opacNoiseShadows)
+        overl.strokeWeight(strk * 2)
+        overl.line(startX, startY, endX, endY)
+        //highlights
+        overl.stroke(0, 0, opacNoiseLights)
+        overl.strokeWeight(strk * 1.5)
+        overl.line(startX, startY - 2, endX, endY - 2)
+
+
+    }
+    overl.pop()
+}
+
+function texLines2(x, y, x1, y1) {
+    overl.push()
+    const controlPoints = []
+    const d = dist(x, y, x1, y1)
+    const segments = d * 0.01
 
     for (let i = 0; i <= segments; i++) {
         const xEnd = x + (x1 - x) * i / segments
@@ -791,50 +833,12 @@ function texLines(x, y, x1, y1) {
         strk = random(0.5, 4)
 
         //shadows
-        overl.stroke(0, 0, 10)
+        overl.stroke(0, 0, opacNoiseShadows)
         overl.strokeWeight(strk * 2)
         overl.line(startX, startY, endX, endY)
         //highlights
-        overl.stroke(0, 0, 90)
-        overl.strokeWeight(strk * 0.8)
-        overl.line(startX, startY - 2, endX, endY - 2)
-
-
-    }
-    overl.pop()
-}
-
-function texLines2(x, y, x1, y1) {
-    overl.push()
-    const controlPoints = []
-    const d = dist(x, y, x1, y1)
-    const segments = d * 0.05
-
-    for (let i = 0; i <= segments; i++) {
-        const xEnd = x + (x1 - x) * i / segments
-        const yEnd = y + (y1 - y) * i / segments
-        const noiseFactor = noise(xEnd * 0.002, yEnd * 0.002)
-        const xOffset = map(noiseFactor, 0, 1, -30, 30)
-        const yOffset = map(noiseFactor, 0, 1, -30, 30)
-
-        controlPoints.push([xEnd + xOffset, yEnd + yOffset])
-    }
-
-    for (let i = 0; i < controlPoints.length - 1; i++) {
-        overl.noFill()
-        const startX = controlPoints[i][0]
-        const startY = controlPoints[i][1]
-        const endX = controlPoints[i + 1][0]
-        const endY = controlPoints[i + 1][1]
-        strk = random(0.5, 6)
-
-        //shadows
-        overl.stroke(0, 0, 10)
-        overl.strokeWeight(strk * 2)
-        overl.line(startX, startY, endX, endY)
-        //highlights
-        overl.stroke(0, 0, 90)
-        overl.strokeWeight(strk * 0.8)
+        overl.stroke(0, 0, opacNoiseLights)
+        overl.strokeWeight(strk * 1.5)
         overl.line(startX - 2, startY, endX - 2, endY)
 
 

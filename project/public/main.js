@@ -126,7 +126,7 @@ function draw() {
 			tex()
 			push()
 			blendMode(BLEND)
-			tint(0, 0, 100, 0.03)
+			tint(0, 0, 100, opacNoiseGlobal)
 			image(overl, 0, 0, width, height)
 			pop()
 			grain(10)
