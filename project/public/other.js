@@ -313,7 +313,7 @@ function keyPressed() {
         isFirstIteration = true
         fPressed = true
         if (dissolve) {
-            pxldrw(1, windowWidth, windowHeight)
+            pxldrw(2, windowWidth, windowHeight)
         } else {
             pxldrw(1, windowWidth * 2, windowHeight * 2)
         }
@@ -355,11 +355,9 @@ function keyPressed() {
     if ('z' === key) {
 
         if (fPressed) {
-            createCanvas(windowWidth / 2, windowHeight / 2, WEBGL)
-            canvasSize.x = width
-            canvasSize.y = height
-            pxlswp = createShader(vert, frag)
+            createCanvas(windowWidth, windowHeight, WEBGL)
             background(hue(backCol), saturation(backCol), brightness(backCol))
+            pxlswp = createShader(vert, frag)
             dissolve = !dissolve
             shaderAnimationTime = 0.0
 
@@ -370,8 +368,9 @@ function keyPressed() {
             draw()
         } else {
             createCanvas(1500, 2000, WEBGL)
-            pxlswp = createShader(vert, frag)
             background(hue(backCol), saturation(backCol), brightness(backCol))
+            pxlswp = createShader(vert, frag)
+            
             dissolve = !dissolve
             shaderAnimationTime = 0.0
 
@@ -396,8 +395,8 @@ function touchStarted() {
 
     if (touchCount === 5) {
         createCanvas(1500, 2000, WEBGL)
-        pxlswp = createShader(vert, frag)
         background(hue(backCol), saturation(backCol), brightness(backCol))
+        pxlswp = createShader(vert, frag)
         dissolve = !dissolve
         shaderAnimationTime = 0.0
 

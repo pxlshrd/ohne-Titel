@@ -148,7 +148,7 @@ function draw() {
 			} else if (!dPressed) {
 				tex()
 			}
-
+			combinedBuffer.image(get(), 0, 0, width, height)
 			fxpreview()
 
 			if (pixelDensity() <= 3 && pixelDensity() > 1) {
@@ -165,14 +165,14 @@ function draw() {
 		counter++
 	} else {
 
-		// background(hue(backCol), saturation(backCol), brightness(backCol))
 		// combinedBuffer.image(get(), 0, 0, width, height)
 		shader(pxlswp)
 
 		// Update shader uniforms
 		pxlswp.setUniform('u_time', millis() / 1000.0)
 		pxlswp.setUniform('u_canvasSize', [canvasSize.x, canvasSize.y])
-		pxlswp.setUniform('u_image', pg)
+		pxlswp.setUniform('u_image', combinedBuffer)
+		pxlswp.setUniform('u_rndPos', aniNoiseRnd)
 
 		noStroke()
 		rect(-width / 2, -height / 2, width, height);
@@ -238,6 +238,8 @@ function initVars() {
 	printsz = 70
 	walkX = random(width)
 	walkY = random(height)
+
+	aniNoiseRnd = Math.random() * 1000
 }
 
 function drawComposition() {
