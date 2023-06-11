@@ -183,6 +183,14 @@ function polyCrayonLineTopSegment(x, y, x1, y1) {
         const yEnd = y + (y1 - y) * i / segments
 
         controlPoints.push([xEnd, yEnd])
+
+        const mainSlope = (y1 - y) / (x1 - x)
+        const perpSlope = -1 / mainSlope
+        const perpIntercept = yEnd - perpSlope * xEnd
+        const perpX = xEnd + 1
+        const perpY = perpSlope * perpX + perpIntercept
+
+        controlPoints.push([perpX, perpY]);
     }
 
     for (let i = 0; i < controlPoints.length; i++) {
@@ -213,7 +221,7 @@ function polyCrayonLineTopSegment(x, y, x1, y1) {
         if (backCol === '#191818') {
             polyOutTop.fill('#DED5CA')
         } else {
-            polyOutTop.fill(20, 10, 20)
+            polyOutTop.fill(20, 10, 20, 0.5)
         }
         polyOutTop.noStroke()
         pencilPigmentsPolyOut(finalX, finalY, random(0.5, 1))
