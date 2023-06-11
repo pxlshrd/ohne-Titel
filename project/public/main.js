@@ -31,7 +31,7 @@ function pxldrw(pxlDens, w, h) {
 	counter = 0
 	stopCounter = false
 
-	createCanvas(w, h, WEBGL)
+	createCanvas(w, h)
 	overl = createGraphics(w, h)
 	pg = createGraphics(w, h)
 	scribbles = createGraphics(w, h)
@@ -75,8 +75,6 @@ function pxldrw(pxlDens, w, h) {
 
 	drawPolyOutlines()
 
-	pxlswp = createShader(vert, frag)
-
 	startTime = millis()
 	timeDisplay = createP()
 	timeDisplay.position(windowWidth - 150, 20)
@@ -86,7 +84,7 @@ function pxldrw(pxlDens, w, h) {
 }
 
 function draw() {
-	translate(-width / 2, -height / 2)
+	// translate(-width / 2, -height / 2)
 
 	if (!dissolve) {
 
@@ -166,6 +164,7 @@ function draw() {
 		displayTime(elapsedTime)
 		counter++
 	} else {
+
 		// background(hue(backCol), saturation(backCol), brightness(backCol))
 		// combinedBuffer.image(get(), 0, 0, width, height)
 		shader(pxlswp)
