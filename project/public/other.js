@@ -406,6 +406,7 @@ function touchStarted() {
         }
         loop()
         draw()
+        touchCount = 0
     }
 }
 
