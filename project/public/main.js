@@ -25,11 +25,11 @@ function setup() {
 function pxldrw(pxlDens, w, h) {
 	fxrandminter = sfc32(...hashes)
 	const seed = fxrandminter() * 123456789
-	randomSeed(seed)
+	randomSeed(seed) 
 	noiseSeed(seed)
 	counter = 0
 	stopCounter = false
-
+	
 	createCanvas(w, h, WEBGL)
 	overl = createGraphics(w, h)
 	pg = createGraphics(w, h)
