@@ -11,6 +11,7 @@ let pg
 let dissolve = false
 let shaderAnimationTime = 0.0
 let canvasSize
+let adaptiveCanvasSize = false
 
 let startTime
 let timeDisplay
@@ -85,100 +86,99 @@ function pxldrw(pxlDens, w, h) {
 }
 
 function draw() {
-	translate (-width / 2, -height / 2)
-	
-	if (dissolve) {
-		
-		combinedBuffer.image(get(), 0, 0, width, height)
-		shader(pxlswp);
-	
+	translate(-width / 2, -height / 2)
+
+	if (!dissolve) {
+
+		resetShader()
+		y = 50 + counter * gridSize
+		if (counter < 1) {
+			drawAsemic()
+			printing(printX, printY, printsz)
+		}
+
+		if (counter < 30 && !dPressed) {
+			pencilArcDraw()
+		}
+
+		if (counter > 20 && !stopCounter && !dPressed && counter % 12 === 0) {
+			brushes()
+		}
+
+
+		if (!stopCounter) {
+			background(hue(backCol), saturation(backCol), brightness(backCol))
+			limbic(width / 2, height / 2, 1000, 50)
+			image(pg, 0, height - (100 + counter * gridSize), width, height)
+
+
+			printingCan.fill(col3)
+			typoPencilPigments(printX - printsz * 4 + counter * 2.2, printY + printsz * 1.1 + random(-50, 10), random(1, 4))
+			image(printingCan, 0, height - (100 + counter * 1.2 * gridSize), width, height)
+			drawComposition()
+
+			sprayWalk()
+
+		}
+
+		if (y > height - 50) {
+			stopCounter = true
+			noLoop()
+			// drawAsemicEraser()
+			if (!dPressed) {
+				for (i = 0; i < 50; i++) {
+					texX = random(width)
+					texY = random(height)
+					smallSprayLine(texX, texY, texX + random(-500, 500), texY + random(-500, 500), random(1, 10))
+				}
+				image(scribbles, 0, 0, width, height)
+
+				drawPolyOutlinesTop()
+				image(polyOutTop, 0, 0)
+
+
+			}
+
+			if (pixelDensity() <= 3 && !dPressed) {
+				tex()
+				push()
+				blendMode(BLEND)
+				tint(0, 0, 100, opacNoiseGlobal)
+				image(overl, 0, 0, width, height)
+				pop()
+				// grain(10)
+			} else if (!dPressed) {
+				tex()
+			}
+
+			fxpreview()
+
+			if (pixelDensity() <= 3 && pixelDensity() > 1) {
+				saveCanvas(title + "_" + $fx.getParam("seeds") + ".jpg")
+			} else if (pixelDensity() > 3) {
+				saveCanvas(title + "_" + $fx.getParam("seeds") + ".png")
+				saveCanvas(title + "_" + $fx.getParam("seeds") + ".jpg")
+			}
+		}
+
+		let endTime = millis()
+		let elapsedTime = (endTime - startTime) / 1000
+		displayTime(elapsedTime)
+		counter++
+	} else {
+		// background(hue(backCol), saturation(backCol), brightness(backCol))
+		// combinedBuffer.image(get(), 0, 0, width, height)
+		shader(pxlswp)
+
 		// Update shader uniforms
-		pxlswp.setUniform('u_time', millis() / 1000.0);
-		pxlswp.setUniform('u_canvasSize', [canvasSize.x, canvasSize.y]);
-		pxlswp.setUniform('u_image', pg);
-		pxlswp.setUniform('u_animationTime', shaderAnimationTime);
+		pxlswp.setUniform('u_time', millis() / 1000.0)
+		pxlswp.setUniform('u_canvasSize', [canvasSize.x, canvasSize.y])
+		pxlswp.setUniform('u_image', pg)
+
 		noStroke()
 		rect(-width / 2, -height / 2, width, height);
-	
-		// Increase the shader animation time
-		shaderAnimationTime += 0.001;
-	  } else {
-		resetShader()
-	y = 50 + counter * gridSize
-	if (counter < 1) {
-		drawAsemic()
-		printing(printX, printY, printsz)
-	}
-
-	if (counter < 30 && !dPressed) {
-		pencilArcDraw()
-	}
-
-	if (counter > 20 && !stopCounter && !dPressed && counter % 12 === 0) {
-		brushes()
-	}
-
-
-	if (!stopCounter) {
-		background(hue(backCol), saturation(backCol), brightness(backCol))
-		limbic(width / 2, height / 2, 1000, 50)
-		image(pg, 0, height - (100 + counter * gridSize), width, height)
-
-
-		printingCan.fill(col3)
-		typoPencilPigments(printX - printsz * 4 + counter * 2.2, printY + printsz * 1.1 + random(-50, 10), random(1, 4))
-		image(printingCan, 0, height - (100 + counter * 1.2 * gridSize), width, height)
-		drawComposition()
-
-		sprayWalk()
 
 	}
-
-	if (y > height - 50) {
-		stopCounter = true
-		noLoop()
-		// drawAsemicEraser()
-		if (!dPressed) {
-			for (i = 0; i < 50; i++) {
-				texX = random(width)
-				texY = random(height)
-				smallSprayLine(texX, texY, texX + random(-500, 500), texY + random(-500, 500), random(1, 10))
-			}
-			image(scribbles, 0, 0, width, height)
-
-			drawPolyOutlinesTop()
-			image(polyOutTop, 0, 0)
-
-
-		}
-
-		if (pixelDensity() <= 3 && !dPressed) {
-			tex()
-			push()
-			blendMode(BLEND)
-			tint(0, 0, 100, opacNoiseGlobal)
-			image(overl, 0, 0, width, height)
-			pop()
-			// grain(10)
-		} else if (!dPressed) {
-			tex()
-		}
-
-		fxpreview()
-
-		if (pixelDensity() <= 3 && pixelDensity() > 1) {
-			saveCanvas(title + "_" + $fx.getParam("seeds") + ".jpg")
-		} else if (pixelDensity() > 3) {
-			saveCanvas(title + "_" + $fx.getParam("seeds") + ".png")
-			saveCanvas(title + "_" + $fx.getParam("seeds") + ".jpg")
-		}
-	}
-
-	let endTime = millis()
-	let elapsedTime = (endTime - startTime) / 1000
-	displayTime(elapsedTime)
-	counter++
-}
 }
 
 function initVars() {
@@ -441,7 +441,7 @@ function sdfFoundation() {
 		let numElements = 100
 		let spiralRadiusIncrement = random(8, 15)
 		let angleIncrement = random(0.1, 1)
-		
+
 		for (let i = 0; i < numElements; i++) {
 			let angle = angleIncrement * i
 			let radius = spiralRadiusIncrement * i

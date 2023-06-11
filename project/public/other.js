@@ -13,17 +13,17 @@ function weightedRnd(input) {
 
 function colDistChooser(input) {
     let pool = []
-  
+
     for (let dist of input) {
         colDist[dist.name] = false
         for (let i = 0; i < dist.probability; i++) {
             pool.push(dist.name)
         }
     }
-  
+
     let selected = pool[int(random(pool.length))]
     colDist[selected] = true
-  }
+}
 
 function checkRectCollision(rectVectors) {
     for (let i = 0; i < polygon.length; i++) {
@@ -89,20 +89,20 @@ function distToLineSegment(px, py, x1, y1, x2, y2) {
 function closestPointOnPolygon(px, py, vertices) {
     let minDist = Infinity
     let closestPoint = null
-  
+
     for (let vertex of vertices) {
-      const a = vertex;
-      const b = vertices[(vertices.indexOf(vertex) + 1) % vertices.length]
-  
-      const point = closestPointOnLine(px, py, a.x, a.y, b.x, b.y)
-      const distToPoint = dist(px, py, point.x, point.y)
-  
-      if (distToPoint < minDist) {
-        minDist = distToPoint
-        closestPoint = point
-      }
+        const a = vertex;
+        const b = vertices[(vertices.indexOf(vertex) + 1) % vertices.length]
+
+        const point = closestPointOnLine(px, py, a.x, a.y, b.x, b.y)
+        const distToPoint = dist(px, py, point.x, point.y)
+
+        if (distToPoint < minDist) {
+            minDist = distToPoint
+            closestPoint = point
+        }
     }
-  
+
     return closestPoint
 }
 
@@ -312,7 +312,11 @@ function keyPressed() {
         closeLastRhombus = false
         isFirstIteration = true
         fPressed = true
+        if (dissolve) {
+        pxldrw(1, windowWidth, windowHeight)
+        }else{
         pxldrw(1, windowWidth * 2, windowHeight * 2)
+        }
         loop()
         draw()
     }
@@ -349,55 +353,63 @@ function keyPressed() {
     }
 
     if ('z' === key) {
+        // adaptiveCanvasSize = !adaptiveCanvasSize;
+        // if (adaptiveCanvasSize) {
+        //     resizeCanvas(windowWidth, windowHeight);
+        //     canvasSize.x = width;
+        //     canvasSize.y = height;
+        // }
         dissolve = !dissolve
         shaderAnimationTime = 0.0
-      }
-      if (!dissolve) {
+    
+    if (!dissolve) {
         resetShader()
-      }
-      loop()
-      draw()
+    }
+    loop()
+    draw()
+}
 }
 
 function touchStarted() {
     if (window.matchMedia("only screen and (max-width: 1180px)").matches) {
-        touchCount++;
-      }
-  
+        touchCount++
+    }
+
     if (touches.length === 1) {
-      saveTimeout = setTimeout(saveCan, 2000)
-      saving = true
+        saveTimeout = setTimeout(saveCan, 2000)
+        saving = true
     }
-  
+
     if (touchCount === 5) {
-        fxrandminter = sfc32(...hashes)
-        counter = 0
-        closeLastRhombus = false
-        isFirstIteration = true
-        pxldrw(2, 1179, 2556)
-        loop()
-        draw()
-      touchCount = 0
+        dissolve = !dissolve
+        shaderAnimationTime = 0.0
+    
+    if (!dissolve) {
+        resetShader()
     }
-  }
-  
-  function touchMoved() {
+    loop()
+    draw()
+        touchCount = 0
+    }
+}
+
+function touchMoved() {
 
     return false
-  }
-  
-  function touchEnded() {
+}
+
+function touchEnded() {
     if (saving) {
-      clearTimeout(saveTimeout)
-      saving = false
+        clearTimeout(saveTimeout)
+        saving = false
     }
 
     return false
-  }
-  
-  function saveCan() {
+}
+
+function saveCan() {
     saveCanvas(title + "_" + $fx.getParam("seeds") + ".jpg")
-  }
+}
 
 function displayTime(time) {
     let display = nf(time, 0, 2)
