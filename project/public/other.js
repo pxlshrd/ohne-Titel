@@ -347,6 +347,16 @@ function keyPressed() {
         loop()
         draw()
     }
+
+    if ('z' === key) {
+        dissolve = !dissolve
+        shaderAnimationTime = 0.0
+      }
+      if (!dissolve) {
+        resetShader()
+      }
+      loop()
+      draw()
 }
 
 function touchStarted() {

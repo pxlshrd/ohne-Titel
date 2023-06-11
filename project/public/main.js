@@ -6,6 +6,11 @@ let saveTimeout
 let saving = false
 let closeLastRhombus = false
 let isFirstIteration = true
+let pxlswp
+let pg
+let dissolve = false
+let shaderAnimationTime = 0.0
+let canvasSize
 
 let startTime
 let timeDisplay
@@ -25,12 +30,14 @@ function pxldrw(pxlDens, w, h) {
 	counter = 0
 	stopCounter = false
 
-	createCanvas(w, h)
+	createCanvas(w, h, WEBGL)
 	overl = createGraphics(w, h)
 	pg = createGraphics(w, h)
 	scribbles = createGraphics(w, h)
 	printingCan = createGraphics(w, h)
 	polyOutTop = createGraphics(w, h)
+	combinedBuffer = createGraphics(w, h)
+	canvasSize = createVector(width, height)
 
 	noiseDet = int(random(2, 5))
 	noiseDetFallOff = 0.5
@@ -44,6 +51,7 @@ function pxldrw(pxlDens, w, h) {
 	overl.pixelDensity(pxlDens)
 	printingCan.pixelDensity(pxlDens)
 	polyOutTop.pixelDensity(pxlDens)
+	combinedBuffer.pixelDensity(pxlDens)
 
 	colorMode(HSB)
 	overl.colorMode(HSB)
@@ -51,6 +59,7 @@ function pxldrw(pxlDens, w, h) {
 	scribbles.colorMode(HSB)
 	printingCan.colorMode(HSB)
 	polyOutTop.colorMode(HSB)
+	combinedBuffer.colorMode(HSB)
 
 	strokeCap(ROUND)
 	frameRate(120)
@@ -65,6 +74,8 @@ function pxldrw(pxlDens, w, h) {
 
 	drawPolyOutlines()
 
+	pxlswp = createShader(vert, frag)
+
 	startTime = millis()
 	timeDisplay = createP()
 	timeDisplay.position(windowWidth - 150, 20)
@@ -74,6 +85,25 @@ function pxldrw(pxlDens, w, h) {
 }
 
 function draw() {
+	translate (-width / 2, -height / 2)
+	
+	if (dissolve) {
+		
+		combinedBuffer.image(get(), 0, 0, width, height)
+		shader(pxlswp);
+	
+		// Update shader uniforms
+		pxlswp.setUniform('u_time', millis() / 1000.0);
+		pxlswp.setUniform('u_canvasSize', [canvasSize.x, canvasSize.y]);
+		pxlswp.setUniform('u_image', pg);
+		pxlswp.setUniform('u_animationTime', shaderAnimationTime);
+		noStroke()
+		rect(-width / 2, -height / 2, width, height);
+	
+		// Increase the shader animation time
+		shaderAnimationTime += 0.001;
+	  } else {
+		resetShader()
 	y = 50 + counter * gridSize
 	if (counter < 1) {
 		drawAsemic()
@@ -129,7 +159,7 @@ function draw() {
 			tint(0, 0, 100, opacNoiseGlobal)
 			image(overl, 0, 0, width, height)
 			pop()
-			grain(10)
+			// grain(10)
 		} else if (!dPressed) {
 			tex()
 		}
@@ -148,6 +178,7 @@ function draw() {
 	let elapsedTime = (endTime - startTime) / 1000
 	displayTime(elapsedTime)
 	counter++
+}
 }
 
 function initVars() {
