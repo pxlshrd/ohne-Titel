@@ -313,9 +313,9 @@ function keyPressed() {
         isFirstIteration = true
         fPressed = true
         if (dissolve) {
-        pxldrw(1, windowWidth, windowHeight)
-        }else{
-        pxldrw(1, windowWidth * 2, windowHeight * 2)
+            pxldrw(1, windowWidth, windowHeight)
+        } else {
+            pxldrw(1, windowWidth * 2, windowHeight * 2)
         }
         loop()
         draw()
@@ -353,35 +353,35 @@ function keyPressed() {
     }
 
     if ('z' === key) {
-        
+
         if (fPressed) {
-            createCanvas(windowWidth/2, windowHeight/2, WEBGL)
+            createCanvas(windowWidth / 2, windowHeight / 2, WEBGL)
             canvasSize.x = width
             canvasSize.y = height
             pxlswp = createShader(vert, frag)
-        background(hue(backCol), saturation(backCol), brightness(backCol))
-        dissolve = !dissolve
-        shaderAnimationTime = 0.0
-    
-    if (!dissolve) {
-        resetShader()
+            background(hue(backCol), saturation(backCol), brightness(backCol))
+            dissolve = !dissolve
+            shaderAnimationTime = 0.0
+
+            if (!dissolve) {
+                resetShader()
+            }
+            loop()
+            draw()
+        } else {
+            createCanvas(1500, 2000, WEBGL)
+            pxlswp = createShader(vert, frag)
+            background(hue(backCol), saturation(backCol), brightness(backCol))
+            dissolve = !dissolve
+            shaderAnimationTime = 0.0
+
+            if (!dissolve) {
+                resetShader()
+            }
+            loop()
+            draw()
+        }
     }
-    loop()
-    draw()
-        }else{
-        createCanvas(1500, 2000, WEBGL)
-		pxlswp = createShader(vert, frag)
-        background(hue(backCol), saturation(backCol), brightness(backCol))
-        dissolve = !dissolve
-        shaderAnimationTime = 0.0
-    
-    if (!dissolve) {
-        resetShader()
-    }
-    loop()
-    draw()
-}
-}
 }
 
 function touchStarted() {
@@ -395,15 +395,17 @@ function touchStarted() {
     }
 
     if (touchCount === 5) {
+        createCanvas(1500, 2000, WEBGL)
+        pxlswp = createShader(vert, frag)
+        background(hue(backCol), saturation(backCol), brightness(backCol))
         dissolve = !dissolve
         shaderAnimationTime = 0.0
-    
-    if (!dissolve) {
-        resetShader()
-    }
-    loop()
-    draw()
-        touchCount = 0
+
+        if (!dissolve) {
+            resetShader()
+        }
+        loop()
+        draw()
     }
 }
 
