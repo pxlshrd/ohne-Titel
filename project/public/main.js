@@ -144,7 +144,7 @@ function draw() {
 				tint(0, 0, 100, opacNoiseGlobal)
 				image(overl, 0, 0, width, height)
 				pop()
-				// grain(10)
+				grain(10)
 			} else if (!dPressed) {
 				tex()
 			}

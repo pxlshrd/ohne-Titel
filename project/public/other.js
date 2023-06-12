@@ -212,6 +212,21 @@ function grain(grainAmount) {
     updatePixels()
 }
 
+// function shadeTex() {
+//     createCanvas(1500, 2000, WEBGL)
+//     background(hue(backCol), saturation(backCol), brightness(backCol))
+//     translate(-width/2, -height/2)
+//     image(combinedBuffer, 0, 0, width, height)
+//     texShader = createShader(vert, paperSoft)
+//     shader(texShader)
+//     texShader.setUniform("u_time", millis() / 1000.0);
+//     texShader.setUniform("u_resolution", [width, height]);
+//     texShader.setUniform("u_canvasSize", [canvasSize.x, canvasSize.y]);
+//     blendMode(MULTIPLY)
+//     noStroke()
+//     rect(0, 0, width, height)
+// }
+
 function keyPressed() {
     if (key === 'p') saveCanvas(title + "_" + $fx.getParam("seeds") + ".png")
     if (key === 'j') saveCanvas(title + "_" + $fx.getParam("seeds") + ".jpg")
@@ -370,7 +385,7 @@ function keyPressed() {
             createCanvas(1500, 2000, WEBGL)
             background(hue(backCol), saturation(backCol), brightness(backCol))
             pxlswp = createShader(vert, frag)
-            
+
             dissolve = !dissolve
             shaderAnimationTime = 0.0
 
