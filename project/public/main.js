@@ -12,6 +12,10 @@ let dissolve = false
 let shaderAnimationTime = 0.0
 let canvasSize
 let adaptiveCanvasSize = false
+let isMuted = false
+let currentGain = -60
+let targetGain = -0.7
+let rampTime = 2.5
 
 let startTime
 let timeDisplay
@@ -74,6 +78,7 @@ function pxldrw(pxlDens, w, h) {
 	sdfFoundation()
 
 	drawPolyOutlines()
+	µziq()
 
 	startTime = millis()
 	timeDisplay = createP()
@@ -85,7 +90,7 @@ function pxldrw(pxlDens, w, h) {
 
 function draw() {
 	// translate(-width / 2, -height / 2)
-
+	
 	if (!dissolve) {
 
 		resetShader()
@@ -164,8 +169,10 @@ function draw() {
 		displayTime(elapsedTime)
 		counter++
 	} else {
-
-		// combinedBuffer.image(get(), 0, 0, width, height)
+		
+		Tone.Transport.start()
+		dynamicVarsAudio()
+	
 		shader(pxlswp)
 
 		// Update shader uniforms
