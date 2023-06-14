@@ -20,6 +20,9 @@ uniform sampler2D u_image;
 uniform vec2 u_canvasSize;
 uniform float u_time;
 uniform float u_rndPos;
+uniform sampler2D u_bufferTexture;
+
+const int numOrganisms = 10;
 
 vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
 
@@ -67,16 +70,17 @@ float turbulence(vec2 P)
   float maxTurbulence = 5.0;  // Maximum turbulence value
   for (float f = 1.0; f <= 10.0; f++)
   {
-    float power = pow(5., f);
-    t += abs(snoise(P * power * (1.0 + sin(u_time/100.0)), vec4(0.211324865405187,
-                      0.366095403784439,
-                      -0.576350269189626,
-                      0.024590243902439)) / power);
+    float power = pow(5.0, f);
+    float timeAdjusted = u_time / 100.0;
+    float turbulenceOffset = snoise(vec2(timeAdjusted / 10.0), vec4(0.211324865405187, 0.366095403784439, -0.576350269189626, 0.024590243902439));
+    vec4 turbulencePermutations = vec4(0.211324865405187 + (turbulenceOffset * 0.0002), 0.366095403784439 + (turbulenceOffset * 0.0002), -0.576350269189626 + (turbulenceOffset * 0.0002), 0.024590243902439 + (turbulenceOffset * 0.0002));
+    t += abs(snoise(P * power * (1.0 + snoise(vec2(timeAdjusted / 10.0), turbulencePermutations)), turbulencePermutations) / power);
     if (t > maxTurbulence)
       break;  // Stop increasing turbulence beyond the maximum limit
   }
   return t;
 }
+
 
 void main() {
   vec2 st = gl_FragCoord.xy / u_canvasSize.xy;
@@ -103,13 +107,14 @@ void main() {
 
   float inflTime = u_time / 20.0;
   
-
   vec2 offset = vec2(cos(noiseValue + timeAdjusted), sin(noiseValue + timeAdjusted));
 
   vec2 bigScaleOffset = vec2(cos(turbulence(st)), sin(turbulence(st))) * timeAdjusted;
   offset += bigScaleOffset;
 
-  vec4 originalColor = texture2D(u_image, st);  // original color without distortion
+  vec4 originalColor = texture2D(u_image, st);
+vec4 bufferColor = texture2D(u_bufferTexture, st);
+originalColor = mix(originalColor, bufferColor, bufferColor.a);
 
   // Create the two layers of distortion
   vec2 offsetLayer1 = vec2(snoise(st + 2.1*distort, vec4(0.211324865405187,
@@ -132,7 +137,7 @@ void main() {
   vec2 combinedOffset = 0.5 * offsetLayer1 + 0.5 * offsetLayer2;
 
   vec2 mixOffsets = mix(offset, combinedOffset, 0.5);
-  
+
   // Use the scaled offset to fetch the colors
   vec4 colorOne = texture2D(u_image, fract(st + mixOffsets));
   vec4 colorTwo = texture2D(u_image, fract(st - mixOffsets));

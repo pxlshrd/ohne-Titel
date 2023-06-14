@@ -170,7 +170,7 @@ function draw() {
 		counter++
 	} else {
 		
-		Tone.Transport.start()
+		
 		dynamicVarsAudio()
 	
 		shader(pxlswp)

@@ -9,6 +9,35 @@ function µziq() {
     fadeIn(10)
     gainNode = new Tone.Gain().toMaster()
 
+    let osc1 = new Tone.OmniOscillator({
+        "frequency": "C3",
+        "type": "sine"
+    });
+
+    let osc2 = new Tone.OmniOscillator({
+        "frequency": "G3",
+        "type": "triangle"
+    });
+
+    let osc3 = new Tone.OmniOscillator({
+        "frequency": "E3",
+        "type": "sawtooth"
+    });
+
+    // Apply amplitude envelope to oscillators
+    let envelope = new Tone.AmplitudeEnvelope({
+        "attack": 2.0,
+        "decay": 0.2,
+        "sustain": 0.5,
+        "release": 2.0
+    }).toDestination();
+
+    // Connect oscillators to the envelope
+    osc1.connect(envelope);
+    osc2.connect(envelope);
+    osc3.connect(envelope);
+
+    // Create effects
     const reverb = new Tone.Reverb({
         decay: 15,
         preDelay: 0.01,
@@ -21,168 +50,45 @@ function µziq() {
         wet: 0.3
     })
 
-    const vibrato = new Tone.Vibrato({
-        frequency: 0.3,
-        depth: 0.9,
-        wet: 1
-    })
-
     const bitCrusher = new Tone.BitCrusher({
         bits: 8,
         wet: 0.1
     });
+    const chorus = new Tone.Chorus(4, 2.5, 0.5);
+    const vibrato = new Tone.Vibrato(2, 0.5);
 
-    const synth = new Tone.MonoSynth({
+    // Connect envelope to the effects
+    envelope.connect(chorus);
+    chorus.connect(vibrato);
+    vibrato.connect(delay);
+    delay.connect(reverb);
+    reverb.connect(bitCrusher);
+    bitCrusher.toDestination();
 
-        oscillator: {
-            type: osc,
-        },
-        envelope: {
-            attack: 0.5,
-            decay: 0.1,
-            sustain: 0.3,
-            release: 0.2
-        },
-        filterEnvelope: {
-            attack: 0.05,
-            decay: 0.01,
-            sustain: 0.5,
-            release: 2,
-            baseFrequency: 400,
-            octaves: 3,
-            exponent: 2
-        }
-    }).chain(delay, vibrato, reverb, bitCrusher, gainNode)
+    // Start oscillators
+    osc1.start();
+    osc2.start();
+    osc3.start();
 
-    const synth2 = new Tone.PolySynth({
-        envelope: {
-            attack: 0.5,
-            decay: 0.1,
-            sustain: 0.1,
-            release: 0.2
-        },
-        filterEnvelope: {
-            attack: 0.05,
-            decay: 0.01,
-            sustain: 0.5,
-            release: 0.2,
-            baseFrequency: 400,
-            octaves: 2,
-            exponent: 2
-        }
+    // Start the envelope
+    envelope.triggerAttackRelease(10);
 
-    }).chain(delay, vibrato, reverb, bitCrusher, gainNode)
-    synth2.volume.value = -8
+    // Create a loop that triggers every 4 seconds
+    let loop = new Tone.Loop((time) => {
+        // trigger the envelope
+        envelope.triggerAttackRelease(4, time);
 
-    const arpSynth = new Tone.FMSynth({
-        harmonicity: 1,
-        modulationIndex: 10,
-        oscillator: {
-            type: 'sine'
-        },
-        envelope: {
-            attack: 0.01,
-            decay: 0.2,
-            sustain: 0.2,
-            release: 0.5
-        },
-        modulation: {
-            type: 'square'
-        },
-        modulationEnvelope: {
-            attack: 0.5,
-            decay: 0,
-            sustain: 1,
-            release: 0.5
-        }
-    }).chain(delay, vibrato, reverb, bitCrusher, gainNode,)
-    arpSynth.volume.value = -6
+        // Randomly update oscillator frequencies
+        osc1.frequency.value = 'C' + (Math.floor(Math.random() * 5) + 1);
+        osc2.frequency.value = 'G' + (Math.floor(Math.random() * 5) + 1);
+        osc3.frequency.value = 'E' + (Math.floor(Math.random() * 5) + 1);
+    }, "8n");
 
-    const firstSynthSeq = new Tone.Sequence((time, note) => {
-        if (Math.random() < 0.3) {
-            synth.triggerAttackRelease(note, '8n', time);
+    // Start the loop
+    loop.start(0);
 
-        }
-    }, notes, "4n")
-
-    const chordSequence = new Tone.Sequence((time, chord) => {
-        if (Math.random() < 0.5) {
-            synth2.triggerAttackRelease(chord, '1m', time);
-        }
-    }, chords, "2n");
-
-
-    const arpSequence = new Tone.Sequence((time, chord) => {
-        if (Math.random() < 0.3) {
-
-            arpSynth.triggerAttackRelease(chord, '16n', time);
-
-        }
-    }, chords, "16n");
-
-    firstSynthSeq.start()
-    chordSequence.start();
-    arpSequence.start();
-
-    const kick = new Tone.MembraneSynth().toDestination();
-    const snare = new Tone.NoiseSynth({ noise: { type: 'brown' }, envelope: { attack: 0.001, decay: 0.1, sustain: 0 } }).toDestination();
-    const hiHat = new Tone.MetalSynth({ frequency: 100, envelope: { attack: 0.001, decay: 0.1, release: 0.2 } }).toDestination();
-    const snare2 = new Tone.NoiseSynth({ noise: { type: 'pink' }, envelope: { attack: 0.001, decay: 0.1, release: 0.3 } }).toDestination();
-
-    const kickSequence = new Tone.Sequence((time, step) => {
-        if (Math.random() < 0.05) {
-            kick.triggerAttackRelease('G-1', '8n', time);
-        }
-    }, randomizeStepSequence(notes.length), '16n');
-
-    const snareSequence = new Tone.Sequence((time, step) => {
-        if (Math.random() < 0.4) {
-            snare.triggerAttack(time);
-        }
-    }, randomizeStepSequence(notes.length), '8n');
-
-    const snare2Sequence = new Tone.Sequence((time, step) => {
-        if (Math.random() < 0.4) {
-            snare2.triggerAttack(time);
-        }
-    }, randomizeStepSequence(notes.length), '4n');
-
-    const hiHatSequence = new Tone.Sequence((time, step) => {
-        if (Math.random() < 0.6) {
-            hiHat.triggerAttackRelease('8n', time);
-        }
-    }, randomizeStepSequence(notes.length), '8n');
-
-
-    hiHatSequence.humanize = true;
-    kickSequence.humanize = true;
-    snareSequence.humanize = true;
-
-
-    // Volume controls
-    kick.volume.value = -2;
-    snare.volume.value = -15;
-    snare2.volume.value = -15;
-    hiHat.volume.value = -38;
-
-
-    const snarePhaser = new Tone.Phaser({
-        frequency: 0.1,
-        octaves: 5,
-        baseFrequency: 1000
-    }).toDestination();
-
-    kick.chain(reverb, bitCrusher, gainNode);
-    snare.chain(snarePhaser, reverb, bitCrusher, gainNode);
-    snare2.chain(snarePhaser, reverb, bitCrusher, gainNode);
-    hiHat.chain(reverb, bitCrusher, gainNode);
-
-    // Start the sequences
-    // kickSequence.start();
-    // snareSequence.start();
-    // snare2Sequence.start();
-    // hiHatSequence.start();
-
+    // Start the Tone.js transport
+    Tone.Transport.start();
     Tone.Transport.bpm.value = bpm;
 }
 
@@ -199,9 +105,9 @@ function dynamicVarsAudio() {
 
 }
 function fadeIn(duration) {
-    const targetGain = -10
+    const targetGain = -20
     Tone.Master.volume.rampTo(targetGain, duration);
-  }
+}
 
 function moodz() {
     const moods = [

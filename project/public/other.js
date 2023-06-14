@@ -330,7 +330,7 @@ function keyPressed() {
         if (dissolve) {
             pxldrw(2, windowWidth, windowHeight)
         } else {
-            pxldrw(1, windowWidth * 2, windowHeight * 2)
+            pxldrw(1, windowWidth * 1.5, windowHeight * 1.5)
         }
         loop()
         draw()
