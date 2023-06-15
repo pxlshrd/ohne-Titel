@@ -234,8 +234,8 @@ function keyPressed() {
     if ("1" === key) {
         fxrandminter = sfc32(...hashes)
         counter = 0
-        closeLastRhombus = false
-        isFirstIteration = true
+        !closeLastRhombus
+        isFirstIteration
         pxldrw(2, 1500, 2000)
         loop()
         draw()
@@ -368,35 +368,50 @@ function keyPressed() {
     }
 
     if ('z' === key) {
-
-        if (fPressed) {
-            createCanvas(windowWidth, windowHeight, WEBGL)
-            background(hue(backCol), saturation(backCol), brightness(backCol))
-            pxlswp = createShader(vert, frag)
-            dissolve = !dissolve
-            shaderAnimationTime = 0.0
-
-            if (!dissolve) {
-                resetShader()
-            }
-            loop()
-            draw()
+        if (zPressed) {
+            return
         } else {
-            createCanvas(1500, 2000, WEBGL)
-            background(hue(backCol), saturation(backCol), brightness(backCol))
-            pxlswp = createShader(vert, frag)
+            if (fPressed) {
+                createCanvas(windowWidth * 1.5, windowHeight * 1.5, WEBGL)
+                background(hue(backCol), saturation(backCol), brightness(backCol))
+                pxlshdr = createShader(vert, frag)
+                dissolve = !dissolve
+                shaderAnimationTime = 0.0
 
-            dissolve = !dissolve
-            shaderAnimationTime = 0.0
+                if (!dissolve) {
+                    resetShader()
+                }
+                loop()
+                draw()
+            } else {
+                createCanvas(1500, 2000, WEBGL)
+                background(hue(backCol), saturation(backCol), brightness(backCol))
+                pxlshdr = createShader(vert, frag)
 
-            if (!dissolve) {
-                resetShader()
+                dissolve = !dissolve
+                shaderAnimationTime = 0.0
+
+                if (!dissolve) {
+                    resetShader()
+                }
+                loop()
+                draw()
             }
-            loop()
-            draw()
+            zPressed = true
+        }
+    } else {
+        zPressed = false
+    }
+
+    if (keyIsPressed && key === ' ') {
+
+        animationPaused = !animationPaused
+        if (!animationPaused) {
+            previousTime = millis()
         }
     }
 }
+
 
 function touchStarted() {
     if (window.matchMedia("only screen and (max-width: 1180px)").matches) {
@@ -411,7 +426,7 @@ function touchStarted() {
     if (touchCount === 5) {
         createCanvas(1500, 2000, WEBGL)
         background(hue(backCol), saturation(backCol), brightness(backCol))
-        pxlswp = createShader(vert, frag)
+        pxlshdr = createShader(vert, frag)
         dissolve = !dissolve
         shaderAnimationTime = 0.0
 

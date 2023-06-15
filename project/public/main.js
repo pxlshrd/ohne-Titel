@@ -6,16 +6,23 @@ let saveTimeout
 let saving = false
 let closeLastRhombus = false
 let isFirstIteration = true
-let pxlswp
+let pxlshdr
 let pg
+
 let dissolve = false
+let zPressed = false
 let shaderAnimationTime = 0.0
 let canvasSize
 let adaptiveCanvasSize = false
+let animationPaused = false
+let previousTime = 0
+let elapsedTime = 0
+
 let isMuted = false
 let currentGain = -60
 let targetGain = -0.7
 let rampTime = 2.5
+let subdivrnd
 
 let startTime
 let timeDisplay
@@ -50,6 +57,7 @@ function pxldrw(pxlDens, w, h) {
 	noiseDetTexFallOff = 0.99
 	noiseDetail(noiseDet, noiseDetFallOff)
 
+	
 	pixelDensity(pxlDens)
 	pg.pixelDensity(pxlDens)
 	scribbles.pixelDensity(pxlDens)
@@ -57,6 +65,7 @@ function pxldrw(pxlDens, w, h) {
 	printingCan.pixelDensity(pxlDens)
 	polyOutTop.pixelDensity(pxlDens)
 	combinedBuffer.pixelDensity(pxlDens)
+	pxlDensShdr = pxlDens
 
 	colorMode(HSB)
 	overl.colorMode(HSB)
@@ -78,7 +87,7 @@ function pxldrw(pxlDens, w, h) {
 	sdfFoundation()
 
 	drawPolyOutlines()
-	µziq()
+	// µziq()
 
 	startTime = millis()
 	timeDisplay = createP()
@@ -89,8 +98,8 @@ function pxldrw(pxlDens, w, h) {
 }
 
 function draw() {
-	// translate(-width / 2, -height / 2)
-	
+
+	dynamicVarsAudio()
 	if (!dissolve) {
 
 		resetShader()
@@ -165,29 +174,33 @@ function draw() {
 		}
 
 		let endTime = millis()
-		let elapsedTime = (endTime - startTime) / 1000
-		displayTime(elapsedTime)
+		let elapTime = (endTime - startTime) / 1000
+		displayTime(elapTime)
 		counter++
 	} else {
-		
-		
-		dynamicVarsAudio()
-	
-		shader(pxlswp)
+		if (!animationPaused) {
+			const currentTime = millis()
+			const deltaTime = currentTime - previousTime
+			previousTime = currentTime
+			elapsedTime += deltaTime
 
-		// Update shader uniforms
-		pxlswp.setUniform('u_time', millis() / 1000.0)
-		pxlswp.setUniform('u_canvasSize', [canvasSize.x, canvasSize.y])
-		pxlswp.setUniform('u_image', combinedBuffer)
-		pxlswp.setUniform('u_rndPos', aniNoiseRnd)
+			shader(pxlshdr)
+			pxlshdr.setUniform('u_time', elapsedTime / 1000.0)
+			pxlshdr.setUniform('u_canvasSize', [canvasSize.x, canvasSize.y])
+			pxlshdr.setUniform('u_image', combinedBuffer)
+			pxlshdr.setUniform('u_rndPos', aniNoiseRnd)
+			pxlshdr.setUniform('u_aspectRatio', aspectRatio)
+			pxlshdr.setUniform('pixelDensity', pxlDensShdr)
 
-		noStroke()
-		rect(-width / 2, -height / 2, width, height);
+			noStroke()
+			rect(-width / 2, -height / 2, width, height);
+		}
 
 	}
 }
 
 function initVars() {
+	aspectRatio = width / height
 	polygon = []
 	gridSize = 8
 	cnt = height - width / 30
