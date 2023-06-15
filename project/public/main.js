@@ -1,5 +1,7 @@
 let title = 'time leaves dust'
-let fPressed = false
+let w = 1500
+let h = 2000
+
 let dPressed = false
 let touchCount = 0
 let saveTimeout
@@ -28,13 +30,15 @@ let startTime
 let timeDisplay
 
 function setup() {
-	const pxlDens = 1
-	const w = 1500
-	const h = 2000
-	pxldrw(pxlDens, w, h)
-}
+	const storedPixelDensityValue = localStorage.getItem("pixelDensityValue")
+    pixelDensityValue = storedPixelDensityValue ? parseInt(storedPixelDensityValue) : 1
 
-function pxldrw(pxlDens, w, h) {
+	const storedWidthValue = localStorage.getItem("w")
+    w = storedWidthValue ? parseInt(storedWidthValue) : w
+	
+	const storedHeightValue = localStorage.getItem("h")
+    h = storedHeightValue ? parseInt(storedHeightValue) : h
+
 	fxrandminter = sfc32(...hashes)
 	const seed = fxrandminter() * $fx.getParam("seeds")
 	randomSeed(seed)
@@ -56,16 +60,16 @@ function pxldrw(pxlDens, w, h) {
 	noiseDetTexture = 6
 	noiseDetTexFallOff = 0.99
 	noiseDetail(noiseDet, noiseDetFallOff)
-
-	
-	pixelDensity(pxlDens)
-	pg.pixelDensity(pxlDens)
-	scribbles.pixelDensity(pxlDens)
-	overl.pixelDensity(pxlDens)
-	printingCan.pixelDensity(pxlDens)
-	polyOutTop.pixelDensity(pxlDens)
-	combinedBuffer.pixelDensity(pxlDens)
-	pxlDensShdr = pxlDens
+   
+	pixelDensity(pixelDensityValue)
+	pg.pixelDensity(pixelDensityValue)
+	scribbles.pixelDensity(pixelDensityValue)
+	overl.pixelDensity(pixelDensityValue)
+	printingCan.pixelDensity(pixelDensityValue)
+	polyOutTop.pixelDensity(pixelDensityValue)
+	combinedBuffer.pixelDensity(pixelDensityValue)
+	pxlDensShdr = pixelDensityValue
+	localStorage.clear()
 
 	colorMode(HSB)
 	overl.colorMode(HSB)
@@ -151,7 +155,7 @@ function draw() {
 
 			}
 
-			if (pixelDensity() <= 3 && !dPressed) {
+			if (pixelDensity() <= 3) {
 				tex()
 				push()
 				blendMode(BLEND)
@@ -159,9 +163,8 @@ function draw() {
 				image(overl, 0, 0, width, height)
 				pop()
 				grain(10)
-			} else if (!dPressed) {
-				tex()
 			}
+			
 			combinedBuffer.image(get(), 0, 0, width, height)
 			fxpreview()
 

@@ -232,146 +232,105 @@ function keyPressed() {
     if (key === 'j') saveCanvas(title + "_" + $fx.getParam("seeds") + ".jpg")
 
     if ("1" === key) {
-        fxrandminter = sfc32(...hashes)
-        counter = 0
-        !closeLastRhombus
-        isFirstIteration
-        pxldrw(2, 1500, 2000)
-        loop()
-        draw()
+        localStorage.setItem("pixelDensityValue", 2)
+        localStorage.setItem("w", 1500)
+        localStorage.setItem("h", 2000)
+        location.reload()
     }
 
     if ("2" === key) {
-        fxrandminter = sfc32(...hashes)
-        counter = 0
-        closeLastRhombus = false
-        isFirstIteration = true
-        pxldrw(3, 1500, 2000)
-        loop()
-        draw()
+        
+        localStorage.setItem("pixelDensityValue", 3)
+        localStorage.setItem("w", 1500)
+        localStorage.setItem("h", 2000)
+        location.reload()
     }
 
     if ("3" === key) {
-        fxrandminter = sfc32(...hashes)
-        counter = 0
-        closeLastRhombus = false
-        isFirstIteration = true
-        pxldrw(4, 1500, 2000)
-        loop()
-        draw()
+        
+        localStorage.setItem("pixelDensityValue", 4)
+        localStorage.setItem("w", 1500)
+        localStorage.setItem("h", 2000)
+        location.reload()
     }
 
     if ("4" === key) {
-        fxrandminter = sfc32(...hashes)
-        counter = 0
-        closeLastRhombus = false
-        isFirstIteration = true
-        pxldrw(5, 1500, 2000)
-        loop()
-        draw()
+        
+        localStorage.setItem("pixelDensityValue", 5)
+        localStorage.setItem("w", 1500)
+        localStorage.setItem("h", 2000)
+        location.reload()
     }
 
     if ("5" === key) {
-        fxrandminter = sfc32(...hashes)
-        counter = 0
-        closeLastRhombus = false
-        isFirstIteration = true
-        pxldrw(6, 1500, 2000)
-        loop()
-        draw()
+        
+        localStorage.setItem("pixelDensityValue", 6)
+        localStorage.setItem("w", 1500)
+        localStorage.setItem("h", 2000)
+        location.reload()
     }
 
     if ("6" === key) {
-        fxrandminter = sfc32(...hashes)
-        counter = 0
-        closeLastRhombus = false
-        isFirstIteration = true
-        pxldrw(7, 1500, 2000)
-        loop()
-        draw()
+        
+        localStorage.setItem("pixelDensityValue", 7)
+        localStorage.setItem("w", 1500)
+        localStorage.setItem("h", 2000)
+        location.reload()
     }
 
     if ("7" === key) {
-        fxrandminter = sfc32(...hashes)
-        counter = 0
-        closeLastRhombus = false
-        isFirstIteration = true
-        pxldrw(8, 1500, 2000)
-        loop()
-        draw()
+        
+        localStorage.setItem("pixelDensityValue", 8)
+        localStorage.setItem("w", 1500)
+        localStorage.setItem("h", 2000)
+        location.reload()
     }
 
     if ("8" === key) {
-        fxrandminter = sfc32(...hashes)
-        counter = 0
-        closeLastRhombus = false
-        isFirstIteration = true
-        pxldrw(9, 1500, 2000)
-        loop()
-        draw()
+        
+        localStorage.setItem("pixelDensityValue", 9)
+        localStorage.setItem("w", 1500)
+        localStorage.setItem("h", 2000)
+        location.reload()
     }
 
     if ("0" === key) {
-        fxrandminter = sfc32(...hashes)
-        counter = 0
-        closeLastRhombus = false
-        isFirstIteration = true
-        pxldrw(1, 1500, 2000)
-        loop()
-        draw()
+       
+        localStorage.setItem("pixelDensityValue", 1)
+        localStorage.setItem("w", 1500)
+        localStorage.setItem("h", 2000)
+        location.reload()
     }
 
     if ("f" === key) {
-        fxrandminter = sfc32(...hashes)
-        counter = 0
-        closeLastRhombus = false
-        isFirstIteration = true
-        fPressed = true
-        if (dissolve) {
-            pxldrw(2, windowWidth, windowHeight)
-        } else {
-            pxldrw(1, windowWidth * 1.5, windowHeight * 1.5)
-        }
-        loop()
-        draw()
+       
+        localStorage.setItem("pixelDensityValue", 1)
+        localStorage.setItem("w",windowWidth * 1.5)
+        localStorage.setItem("h", windowHeight * 1.5)
+        location.reload()
     }
 
-    if (fPressed && 'h' === key) {
-        fxrandminter = sfc32(...hashes)
-        counter = 0
-        closeLastRhombus = false
-        isFirstIteration = true
-        pxldrw(4, windowWidth * 2, windowHeight * 2)
-        loop()
-        draw()
-    }
+    if ('h' === key) {
 
-    if ("d" === key) {
-        fxrandminter = sfc32(...hashes)
-        counter = 0
-        closeLastRhombus = false
-        isFirstIteration = true
-        dPressed = true
-        pxldrw(1, 1500, 2000)
-        loop()
-        draw()
+        localStorage.setItem("pixelDensityValue", 4)
+        localStorage.setItem("w", windowWidth * 1.5)
+        localStorage.setItem("h", windowHeight * 1.5)
+        location.reload()
     }
 
     if ("w" === key) {
-        fxrandminter = sfc32(...hashes)
-        counter = 0
-        closeLastRhombus = false
-        isFirstIteration = true
-        pxldrw(2, 1179, 2556)
-        loop()
-        draw()
+       
+        localStorage.setItem("pixelDensityValue", 2)
+        localStorage.setItem("w", 1179)
+        localStorage.setItem("h", 2556)
+        location.reload()
     }
 
     if ('z' === key) {
         if (zPressed) {
             return
         } else {
-            if (fPressed) {
+            if (width === windowWidth * 1.5) {
                 createCanvas(windowWidth * 1.5, windowHeight * 1.5, WEBGL)
                 background(hue(backCol), saturation(backCol), brightness(backCol))
                 pxlshdr = createShader(vert, frag)
