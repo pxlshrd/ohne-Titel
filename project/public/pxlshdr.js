@@ -20,12 +20,12 @@ uniform sampler2D u_image;
 uniform vec2 u_canvasSize;
 uniform float u_time;
 uniform float u_rndPos;
-uniform sampler2D u_bufferTexture;
 uniform float u_aspectRatio;
 uniform float pixelDensity;
-const int numBubbles = 2;
+uniform float u_u_scale;
+uniform float u_rnd;
 
-vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+vec3 permute(vec3 x) { return mod(((x * 34.0) + 1.0) * x, 289.0); }
 
 vec4 taylorInvSqrt(vec4 r)
 {
@@ -34,13 +34,13 @@ vec4 taylorInvSqrt(vec4 r)
 
 float random(vec2 st)
 {
-    return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
+  return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
 }
 
 float snoise(vec2 v, vec4 C)
 {
-  v += u_rndPos;
-  vec2 i  = floor(v + dot(v, C.yy));
+  v += u_u_scale + u_rndPos;
+  vec2 i = floor(v + dot(v, C.yy));
   vec2 x0 = v - i + dot(i, C.xx);
 
   vec2 i1;
@@ -49,33 +49,32 @@ float snoise(vec2 v, vec4 C)
   x12.xy -= i1;
 
   i = mod(i, 289.0);
-  vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
-    + i.x + vec3(0.0, i1.x, 1.0 ));
+  vec3 p = permute(permute(i.y + vec3(0.0, i1.y, 1.0)) + i.x + vec3(0.0, i1.x, 1.0));
 
-  vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy),
-    dot(x12.zw,x12.zw)), 0.0);
-  m = m*m ;
-  m = m*m ;
+  vec3 m = max(0.5 - vec3(dot(x0, x0), dot(x12.xy, x12.xy), dot(x12.zw, x12.zw)), 0.0);
+  m = m * m;
+  m = m * m;
 
   vec3 x = 2.0 * fract(p * C.www) - 1.0;
   vec3 h = abs(x) - 0.5;
   vec3 ox = floor(x + 0.5);
   vec3 a0 = x - ox;
 
-  m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+  m *= 1.79284291400159 - 0.85373472095314 * (a0 * a0 + h * h);
 
   vec3 g;
-  g.x  = a0.x  * x0.x  + h.x  * x0.y;
+  g.x = a0.x * x0.x + h.x * x0.y;
   g.yz = a0.yz * x12.xz + h.yz * x12.yw;
   return 130.0 * dot(m, g);
 }
 
-float worley(vec2 P) {
+float worley(vec2 P, float scale) {
+  P *= scale + u_u_scale;
   float d = 1e30;
   for (int xo = -1; xo <= 1; ++xo)
   for (int yo = -1; yo <= 1; ++yo) {
       vec2 tp = floor(P) + vec2(xo, yo);
-      d = min(d, length(P - tp - random(vec2(tp))));
+      d = min(d, length(P - tp - u_rnd / u_time / 100.));
   }
   return 1.0 - d;
 }
@@ -83,16 +82,13 @@ float worley(vec2 P) {
 float turbulence(vec2 P)
 {
   float t = -0.5;
-  float maxTurbulence = 0.2;  // Maximum turbulence value
   for (float f = 1.0; f <= 10.0; f++)
   {
-    float power = pow(5.0, f);
-    float timing = u_time / 10.0;
-  
-    vec4 turbulencePermutations = vec4(0.211324865405187, 0.366095403784439, -0.576350269189626, 0.024590243902439);
-    t += abs(snoise(P * power * (1.0 + snoise(vec2(timing / 10.0), turbulencePermutations)), turbulencePermutations) / power*2.);
-    if (t > maxTurbulence)
-      break;  // Stop increasing turbulence beyond the maximum limit
+    float power = pow(6., f);
+    t += abs(snoise(P * power * (1.0 + sin(u_time / 100.0)) / 5., vec4(0.211324865405187,
+                      0.366095403784439,
+                      -0.576350269189626,
+                      0.024590243902439)) / power);
   }
   return t;
 }
@@ -120,60 +116,39 @@ void main() {
                       0.776095403784439,
                       0.676350269189626,
                       0.124590243902439)), 0.5);
-  
+
   vec2 offset = vec2(cos(noiseValue + timeAdjusted), sin(noiseValue + timeAdjusted));
 
-  vec2 bigScaleOffset = vec2(cos(turbulence(st)), sin(turbulence(st))) * timeAdjusted;
+  vec2 bigScaleOffset = vec2(abs(turbulence(st)), abs(turbulence(st))) * timeAdjusted;
   offset += bigScaleOffset;
 
 
-  vec4 originalColor = texture2D(u_image, st);
-vec4 bufferColor = texture2D(u_bufferTexture, st);
-originalColor = mix(originalColor, bufferColor, bufferColor.a);
-
   // Create the two layers of distortion
-  vec2 offsetLayer1 = vec2(snoise(st + 2.1*distort, vec4(0.211324865405187,
+  vec2 offsetLayer1 = vec2(snoise(st + 2.1 * distort, vec4(0.211324865405187,
                     0.366095403784439,
                     -0.576350269189626,
-                    0.024590243902439)), snoise(st + 2.1*distort, vec4(0.136324865405187,
+                    0.024590243902439)), snoise(st + 2.1 * distort, vec4(0.136324865405187,
                     0.776095403784439,
                     0.676350269189626,
                     0.124590243902439)));
-  
-  vec2 offsetLayer2 = vec2(snoise(st + 0.01*distort, vec4(0.211324865405187,
+
+  vec2 offsetLayer2 = vec2(snoise(st + 0.01 * distort, vec4(0.211324865405187,
                     0.366095403784439,
                     -0.576350269189626,
-                    0.024590243902439)), snoise(st + 0.01*distort, vec4(0.136324865405187,
+                    0.024590243902439)), snoise(st + 0.01 * distort, vec4(0.136324865405187,
                     0.776095403784439,
                     0.676350269189626,
                     0.124590243902439)));
-  
+
   // Combine the layers by averaging
   vec2 combinedOffset = 0.5 * offsetLayer1 + 0.5 * offsetLayer2;
 
   vec2 mixOffsets = mix(offset, combinedOffset, 0.5);
 
-  for (int i = 0; i < numBubbles; ++i) {
-    vec2 bubblePos = vec2(
-      0.5 + 0.2 * sin(u_time / 15.0 + float(i)), 
-      0.5 + 0.2 * cos(u_time / 18.0 + float(i)));
-    // Increase the frequency of the sin function to make the bubbles appear and disappear faster
-    float bubbleSize = 0.1 + 0.5 * sin(u_time + float(i));
-    float bubbleInfl = smoothstep(0.8, 0.0, bubbleSize) * smoothstep(0.9, 0.0, bubbleSize);
-    
-    vec2 dir = st - bubblePos;
-    float dist = length(dir);
-    if (dist < bubbleSize) {
-      bubbleInfl *= smoothstep(0.2, 0.0, dist / bubbleSize);
-      mixOffsets += bubbleInfl * normalize(dir);
-    }
-  }
-
   // Use the scaled offset to fetch the colors
   vec4 colorOne = texture2D(u_image, fract(st + mixOffsets));
   vec4 colorTwo = texture2D(u_image, fract(st - mixOffsets));
-  
-  
+
   vec4 finalColor;
   if (noiseValue > 0.5) {
     finalColor = vec4(colorTwo.rgb * colorTwo.a, colorTwo.a);
@@ -181,13 +156,15 @@ originalColor = mix(originalColor, bufferColor, bufferColor.a);
     finalColor = vec4(colorOne.rgb * colorOne.a, colorOne.a);
   }
 
-  
-  // fade in
+  // Fade in
   float inflTime = u_time / 20.0;
   float influence = min(inflTime * inflTime, 1.0);
+  vec4 originalColor = texture2D(u_image, st);
 
   gl_FragColor = mix(originalColor, finalColor, influence);
+
 }
+
 
 `;
 

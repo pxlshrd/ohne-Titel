@@ -227,6 +227,7 @@ function grain(grainAmount) {
 //     rect(0, 0, width, height)
 // }
 
+
 function keyPressed() {
     if (key === 'p') saveCanvas(title + "_" + $fx.getParam("seeds") + ".png")
     if (key === 'j') saveCanvas(title + "_" + $fx.getParam("seeds") + ".jpg")
@@ -239,7 +240,7 @@ function keyPressed() {
     }
 
     if ("2" === key) {
-        
+
         localStorage.setItem("pixelDensityValue", 3)
         localStorage.setItem("w", 1500)
         localStorage.setItem("h", 2000)
@@ -247,7 +248,7 @@ function keyPressed() {
     }
 
     if ("3" === key) {
-        
+
         localStorage.setItem("pixelDensityValue", 4)
         localStorage.setItem("w", 1500)
         localStorage.setItem("h", 2000)
@@ -255,7 +256,7 @@ function keyPressed() {
     }
 
     if ("4" === key) {
-        
+
         localStorage.setItem("pixelDensityValue", 5)
         localStorage.setItem("w", 1500)
         localStorage.setItem("h", 2000)
@@ -263,7 +264,7 @@ function keyPressed() {
     }
 
     if ("5" === key) {
-        
+
         localStorage.setItem("pixelDensityValue", 6)
         localStorage.setItem("w", 1500)
         localStorage.setItem("h", 2000)
@@ -271,7 +272,7 @@ function keyPressed() {
     }
 
     if ("6" === key) {
-        
+
         localStorage.setItem("pixelDensityValue", 7)
         localStorage.setItem("w", 1500)
         localStorage.setItem("h", 2000)
@@ -279,7 +280,7 @@ function keyPressed() {
     }
 
     if ("7" === key) {
-        
+
         localStorage.setItem("pixelDensityValue", 8)
         localStorage.setItem("w", 1500)
         localStorage.setItem("h", 2000)
@@ -287,7 +288,7 @@ function keyPressed() {
     }
 
     if ("8" === key) {
-        
+
         localStorage.setItem("pixelDensityValue", 9)
         localStorage.setItem("w", 1500)
         localStorage.setItem("h", 2000)
@@ -295,7 +296,7 @@ function keyPressed() {
     }
 
     if ("0" === key) {
-       
+
         localStorage.setItem("pixelDensityValue", 1)
         localStorage.setItem("w", 1500)
         localStorage.setItem("h", 2000)
@@ -303,9 +304,9 @@ function keyPressed() {
     }
 
     if ("f" === key) {
-       
+
         localStorage.setItem("pixelDensityValue", 1)
-        localStorage.setItem("w",windowWidth * 1.5)
+        localStorage.setItem("w", windowWidth * 1.5)
         localStorage.setItem("h", windowHeight * 1.5)
         location.reload()
     }
@@ -319,7 +320,7 @@ function keyPressed() {
     }
 
     if ("w" === key) {
-       
+
         localStorage.setItem("pixelDensityValue", 2)
         localStorage.setItem("w", 1179)
         localStorage.setItem("h", 2556)
@@ -369,6 +370,12 @@ function keyPressed() {
             previousTime = millis()
         }
     }
+
+    if (keyCode === UP_ARROW) {
+        u_scale += 0.0005
+      } else if (keyCode === DOWN_ARROW) {
+        u_scale -= 0.0005
+      }
 }
 
 

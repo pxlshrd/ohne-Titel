@@ -91,7 +91,7 @@ function setup() {
 	sdfFoundation()
 
 	drawPolyOutlines()
-	// µziq()
+	µziq()
 
 	startTime = millis()
 	timeDisplay = createP()
@@ -182,6 +182,7 @@ function draw() {
 		counter++
 	} else {
 		if (!animationPaused) {
+			Tone.Transport.start()
 			const currentTime = millis()
 			const deltaTime = currentTime - previousTime
 			previousTime = currentTime
@@ -194,6 +195,9 @@ function draw() {
 			pxlshdr.setUniform('u_rndPos', aniNoiseRnd)
 			pxlshdr.setUniform('u_aspectRatio', aspectRatio)
 			pxlshdr.setUniform('pixelDensity', pxlDensShdr)
+			pxlshdr.setUniform('u_scale', u_scale)
+			pxlshdr.setUniform('u_rnd', random())
+			
 
 			noStroke()
 			rect(-width / 2, -height / 2, width, height);
@@ -263,6 +267,7 @@ function initVars() {
 	walkY = random(height)
 
 	aniNoiseRnd = Math.random() * 1000
+	u_scale = 0
 }
 
 function drawComposition() {

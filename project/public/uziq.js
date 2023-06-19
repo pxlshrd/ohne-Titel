@@ -1,85 +1,29 @@
 
 function µziq() {
 
-    let minorScales = [
-        ["261.63", null, "293.66", "311.13", null, "349.23", "392.00", null, "415.30", "466.16", "523.25"], // C minor
-        ["277.18", "311.13", null, "329.63", "369.99", null, "415.30", "440.00", null, "493.88", "554.37"], // C# minor
-        ["293.66", "329.63", null, "349.23", "392.00", "440.00", "466.16", null, "523.25", null, "587.33"], // D minor
-        ["311.13", null, "349.23", "369.99", "415.30", "466.16", "493.88", null, "554.37", "622.25"], // D# minor
-        ["329.63", null, "369.99", "392.00", null, "440.00", "493.88", "523.25", "587.33", "659.26", null], // E minor
-        ["349.23", "392.00", "415.30", "466.16", null, "523.25", null, "554.37", "622.25", null, "698.46"], // F minor
-        ["369.99", null, "415.30", null, "440.00", null, "493.88", "554.37", "587.33", "659.26", "739.99"], // F# minor
-        ["392.00", null, "440.00", "466.16", "523.25", "587.33", null, "622.25", "698.46", null, "783.99"], // G minor
-        ["415.30", "466.16", null, "493.88", null, "554.37", "622.25", "659.26", null, "739.99", "830.61"], // G# minor
-        ["440.00", "493.88", "523.25", "587.33", null, "659.26", null, "698.46", "783.99", null, "880.00"], // A minor
-    ];
-    let scale = random(minorScales)
+    let subd = random(["1m", "2n", "4n"])
 
-    oscill1 = random(['fmtriangle', 'fmsine', 'square4']);
-    oscill2 = random(['fmtriangle', 'fmsine', 'square4']);
-    oscill3 = random(['fmtriangle', 'fmsine', 'square4']);
 
-    bpm = floor(random(40, 80));
-    moodz();
+    oscill1 = random(['fmtriangle', 'fmsine', 'square4'])
+    oscill2 = random(['fmtriangle', 'fmsine', 'square4'])
+    oscill3 = random(['fmtriangle', 'fmsine', 'square4'])
 
-    initialGain = -60;
-    Tone.Master.volume.value = initialGain;
-    fadeIn(10);
-    gainNode = new Tone.Gain().toMaster();
+    bpm = floor(random(40, 80))
+    moodz()
+    let scale = random(moods)
 
-    // Create oscillators
-    let osc1 = new Tone.OmniOscillator({
-        "frequency": random(scale),
-        "type": oscill1
-    });
+    initialGain = -60
+    Tone.Master.volume.value = initialGain
+    fadeIn(10)
 
-    let osc2 = new Tone.OmniOscillator({
-        "frequency": random(scale),
-        "type": oscill2
-    });
-
-    let osc3 = new Tone.OmniOscillator({
-        "frequency": random(scale),
-        "type": oscill3
-    });
-
-    let osc4 = new Tone.OmniOscillator({
-        "frequency": random(scale),
-        "detune": 0.2,
-        "type": oscill2
-    });
-
-    let osc5 = new Tone.OmniOscillator({
-        "frequency": random(scale),
-        "detune": 0.5,
-        "type": oscill3
-    });
-
-    // Apply amplitude envelope to oscillators
-    let envelope = new Tone.AmplitudeEnvelope({
-        "attack": 2.0,
-        "decay": 0.5,
-        "sustain": 0.5,
-        "release": 5.0
-    }).toDestination();
-
-    // Connect oscillators to the envelope
-    osc1.connect(envelope);
-    osc2.connect(envelope);
-    osc3.connect(envelope);
-    osc4.connect(envelope);
-    osc5.connect(envelope);
-
-    const filter = new Tone.Filter({
-        type: 'highpass',
-        frequency: 300
-    });
+    // FX
+    const filter = new Tone.Filter(400, 'highpass')
 
     const reverb = new Tone.Reverb({
-        decay: 30,
+        decay: 40,
         preDelay: 0.01,
         wet: 1.0
-    }).toDestination()
+    })
 
     const delay = new Tone.FeedbackDelay({
         feedback: 0.8,
@@ -89,53 +33,79 @@ function µziq() {
 
     const bitCrusher = new Tone.BitCrusher({
         bits: 8,
-        wet: 0.8
+        wet: 0.3
     });
-    const chorus = new Tone.Chorus(4, 2.5, 1.0);
-    const vibrato = new Tone.Vibrato(2, 0.7);
+    const chorus = new Tone.Chorus(4, 2.5, 1.0)
+    const vibrato = new Tone.Vibrato(1, 0.7)
     const limiter = new Tone.Limiter({
         "threshold": -6,
     })
 
-    envelope.connect(filter);
-    filter.connect(chorus);
-    chorus.connect(vibrato);
-    vibrato.connect(delay);
-    delay.connect(reverb);
-    reverb.connect(bitCrusher);
-    bitCrusher.connect(limiter);
-    limiter.toDestination();
+    
+    const synth = new Tone.Synth({
+        oscillator: {
+            type: 'triangle'
+        },
+        envelope: {
+            attack: 1.5,
+            decay: 0.2,
+            sustain: 0.5,
+            release: 1.5
+        }
+    })
+    synth.volume.value = +5
 
-    // Start oscillators
-    osc1.start();
-    osc2.start();
-    osc3.start();
-    osc4.start();
-    osc5.start();
+    synth.connect(chorus)
+    chorus.connect(vibrato)
+    vibrato.connect(delay)
+    delay.connect(bitCrusher)
+    bitCrusher.connect(reverb)
+    reverb.connect(filter)
+    filter.connect(limiter)
+    limiter.toDestination()
+
+    Tone.Transport.scheduleRepeat(time => {
+        let note = random(scale.notes)
+        synth.triggerAttackRelease(note, subd, time);
+    }, subd)
+
+      /////////           //////////
+     /////////  synth 2  //////////
+    /////////           //////////
+
+    let subd2 = random(["1m", "2n", "4n"])
+
+    const synth2 = new Tone.Synth({
+        oscillator: {
+            type: 'sine'
+        },
+        envelope: {
+            attack: 0.5,
+            decay: 0.4,
+            sustain: 0.8,
+            release: 1.0
+        }
+    })
+    synth2.volume.value = -10
+
+    synth2.connect(chorus)
+    chorus.connect(vibrato)
+    vibrato.connect(delay)
+    delay.connect(bitCrusher)
+    bitCrusher.connect(reverb)
+    reverb.connect(filter)
+    filter.connect(limiter)
+    limiter.toDestination()
 
 
-    // Start the envelope
-    envelope.triggerAttackRelease(10);
-
-    let loop = new Tone.Loop((time) => {
-        // trigger the envelope
-        envelope.triggerAttackRelease(subdivrnd, time);
-
-        // Randomly update oscillator frequencies from the scale
-        osc1.frequency.value = random(scale);
-        osc2.frequency.value = random(scale);
-        osc3.frequency.value = random(scale);
-        osc4.frequency.value = random(scale);
-        osc5.frequency.value = random(scale);
-
-    }, "2n");
-
-    // Start the loop
-    loop.start(0);
-
-    // Start the Tone.js transport
-    Tone.Transport.start();
-    Tone.Transport.bpm.value = bpm;
+    Tone.Transport.scheduleRepeat(time => {
+        let note = random(scale.notes)
+        synth2.triggerAttackRelease(note, subd2, time);
+    }, subd2)
+    
+    // Tone.Transport.start()
+    Tone.Transport.bpm.value = bpm
+    console.log(scale.name)
 }
 
 function randomizeStepSequence(length) {
@@ -151,12 +121,12 @@ function dynamicVarsAudio() {
     subdivrnd = random(['4n', '8n', '2n', '1m', "16n", "32n"]);
 }
 function fadeIn(duration) {
-    const targetGain = -25
+    const targetGain = -20
     Tone.Master.volume.rampTo(targetGain, duration);
 }
 
 function moodz() {
-    const moods = [
+    moods = [
         {
             name: "1",
             chords: [['Eb2', 'G2', 'Bb2'], ['C2', 'Eb2', 'G2'], ['Eb3', 'G3', 'Bb3'],
@@ -187,10 +157,10 @@ function moodz() {
         },
         {
             name: "5",
-            chords: [['G2', 'Bb2', 'D3'], ['Bb2', 'Db3', 'F3'], ['G3', 'Bb3', 'D4'],
+            chords: [['G2', 'Bb2', 'D3'], ['Bb2', 'F3', 'F3'], ['G3', 'Bb3', 'D4'],
             ['C3', 'Eb3', 'G3'], ['Eb3', 'Gb3', 'Bb3'], ['Ab3', 'C4', 'Eb4'],
-            ['Db4', 'F4', 'Ab4'], ['G4', 'Bb4', 'D5']],
-            notes: ["G2", "Bb2", "G3", "C3", null, "Eb3", null, 'Ab3', null, 'Db4', 'G4']
+            ['F4', 'F4', 'Ab4'], ['G4', 'Bb4', 'D5']],
+            notes: ["G2", "Bb2", "G3", "C3", null, "Eb3", null, 'Ab3', null, 'F4', 'G4']
         },
         {
             name: "6",
